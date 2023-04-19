@@ -8,6 +8,7 @@ import { ThemeContext } from "@/utils/context";
 import axios from "axios";
 
 import Home from "@/pages";
+import Auth from "@/pages/Auth";
 
 // axios.defaults.baseURL = "https://pokeapi.co/api/v2/";
 
@@ -19,6 +20,10 @@ const Router: FC = () => {
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path: "/auth",
+      element: <Auth />,
     },
   ]);
 
