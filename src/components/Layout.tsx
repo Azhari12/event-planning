@@ -9,11 +9,11 @@ interface Props {
 const Layout: FC<Props> = (props) => {
   const { children } = props;
   return (
-    <div className="flex flex-col h-screen w-full overflow-auto ">
+    <div className="flex flex-col min-h-screen w-full ">
       <div className="drawer min-h-screen h-full">
         <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
-          <div className=" h-full">
+        <div className="drawer-content flex flex-col relative h-full">
+          <div className=" h-full  bg-gradient-to-r from-[#EBEBEB] to-white to-40%">
             <div className="w-full navbar bg-button text-white p-0">
               <div className="flex-none lg:hidden">
                 <label
@@ -54,7 +54,7 @@ const Layout: FC<Props> = (props) => {
                 </ul>
               </div>
             </div>
-            <div className="container mx-auto bg-center bg-cover bg-no-repeat flex flex-col p-3">
+            <div className="container mx-auto bg-center bg-cover bg-no-repeat flex flex-col p-3  ">
               {children}
             </div>
           </div>
