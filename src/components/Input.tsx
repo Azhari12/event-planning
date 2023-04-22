@@ -4,7 +4,7 @@ interface inputType extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
 }
 
-const Input: FC<inputType> = (props) => {
+export const Input: FC<inputType> = (props) => {
   const { placeholder, label } = props;
   return (
     <div className="form-control w-full min-w-xs">
@@ -16,4 +16,14 @@ const Input: FC<inputType> = (props) => {
   );
 };
 
-export default Input;
+export const InputForm: FC<inputType> = (props) => {
+  const { placeholder, label } = props;
+  return (
+    <div className="form-control w-full min-w-xs">
+      <label className="label">
+        <span className="label-text">{label}</span>
+      </label>
+      <input className="input input-bordered w-full rounded-xl" {...props} />
+    </div>
+  );
+};
