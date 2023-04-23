@@ -16,9 +16,16 @@ const MyEvents: FC = () => {
       <div className=" flex w-full sm:flex-col md:flex-row min-[400px]:flex-col p-10 transition-all">
         <div className=" flex-initial lg:w-[25%] md:w-[25%] sm:flex-row min-[400px]:w-full transition-all">
           <div>
-            <p className=" text-4xl text-button font-bold lg:text-start sm:text-center min-[400px]:text-center">
-              Attending
-            </p>
+            {page == "attending" ? (
+              <p className=" text-4xl text-button font-bold lg:text-start sm:text-center min-[400px]:text-center">
+                Attending
+              </p>
+            ) : (
+              <p className=" text-4xl text-button font-bold lg:text-start sm:text-center min-[400px]:text-center">
+                Hosting
+              </p>
+            )}
+
             {page == "attending" ? (
               <div className="flex lg:flex-col items-start mt-5  font-semibold">
                 <button
