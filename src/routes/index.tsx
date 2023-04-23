@@ -12,6 +12,7 @@ import Auth from "@/pages/Auth";
 import DetailEvent from "@/pages/DetailEvent";
 import CreateEvent from "@/pages/CreateEvent";
 import MyEvents from "@/pages/MyEvents";
+import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
 
 // axios.defaults.baseURL = "https://pokeapi.co/api/v2/";
 
@@ -39,6 +40,10 @@ const Router: FC = () => {
     {
       path: "/my-events",
       element: <MyEvents />,
+    },
+    {
+      path: "/detail-attending-event",
+      element: <DetailAttendingEvent />,
     },
   ]);
 

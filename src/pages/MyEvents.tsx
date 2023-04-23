@@ -16,11 +16,11 @@ const MyEvents: FC = () => {
       <div className=" flex w-full sm:flex-col md:flex-row min-[400px]:flex-col p-10 transition-all">
         <div className=" flex-initial lg:w-[25%] md:w-[25%] sm:flex-row min-[400px]:w-full transition-all">
           <div>
-            <p className=" text-4xl text-button font-bold sm:text-center min-[400px]:text-center">
+            <p className=" text-4xl text-button font-bold lg:text-start sm:text-center min-[400px]:text-center">
               Attending
             </p>
             {page == "attending" ? (
-              <div className=" flex lg:flex-col items-start mt-5  font-semibold">
+              <div className="flex lg:flex-col items-start mt-5  font-semibold">
                 <button
                   className=" bg-[#A3C7FF] p-3 w-full text-start flex transition-all"
                   onClick={(event) => handlePage("attending")}
