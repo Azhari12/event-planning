@@ -13,8 +13,10 @@ import DetailEvent from "@/pages/DetailEvent";
 import CreateEvent from "@/pages/CreateEvent";
 import MyEvents from "@/pages/MyEvents";
 import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
+import DetailHostingEvent from "@/pages/DetailHostingEvent";
 
-// axios.defaults.baseURL = "https://pokeapi.co/api/v2/";
+axios.defaults.baseURL =
+  "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.5";
 
 const Router: FC = () => {
   const [theme, setTheme] = useState<string>("dark");
@@ -44,6 +46,10 @@ const Router: FC = () => {
     {
       path: "/detail-attending-event",
       element: <DetailAttendingEvent />,
+    },
+    {
+      path: "/detail-hosting-event",
+      element: <DetailHostingEvent />,
     },
   ]);
 
