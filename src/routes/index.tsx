@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import { FC, useState, useMemo, useEffect } from "react";
 import { ThemeContext } from "@/utils/context";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 
 import Home from "@/pages";
@@ -14,6 +15,7 @@ import CreateEvent from "@/pages/CreateEvent";
 import MyEvents from "@/pages/MyEvents";
 import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
 import DetailHostingEvent from "@/pages/DetailHostingEvent";
+import UpdateEvent from "@/pages/UpdateEvent";
 
 axios.defaults.baseURL =
   "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.5";
@@ -50,6 +52,10 @@ const Router: FC = () => {
     {
       path: "/detail-hosting-event",
       element: <DetailHostingEvent />,
+    },
+    {
+      path: "/update-event",
+      element: <UpdateEvent />,
     },
   ]);
 
