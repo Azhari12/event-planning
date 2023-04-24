@@ -17,6 +17,7 @@ const DetailEvent: FC = () => {
   useEffect(() => {
     console.log(tikectselect);
     console.log(tiecketArray);
+
     // addTicket(tikectselect);
   }, [tiecketArray]);
 

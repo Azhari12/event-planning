@@ -34,16 +34,16 @@ const Home: FC = () => {
         </div>
         <div className=" flex-1">
           <div className=" flex flex-col">
-            <Link to={"/"}>
+            <Link to={"/detail-event"}>
               <Card />
             </Link>
-            <Link to={"/"}>
+            <Link to={"/detail-event"}>
               <Card />
             </Link>
-            <Link to={"/"}>
+            <Link to={"/detail-event"}>
               <Card />
             </Link>
-            <Link to={"/"}>
+            <Link to={"/detail-event"}>
               <Card />
             </Link>
           </div>
