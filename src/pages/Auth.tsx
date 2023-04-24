@@ -1,8 +1,24 @@
+import withReactContent from "sweetalert2-react-content";
 import { Input } from "@/components/Input";
-import { FC, useState, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
+import Swal from "@/utils/Swal";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
+import { handleAuth } from "@/utils/redux/reducers/reducer";
+import { useNavigate } from "react-router-dom";
 
 const Auth: FC = () => {
   const [register, setRegister] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [image, setImage] = useState<string>("https://peterzalai.jpg");
+  const [, setCookie] = useCookies(["token", "uname"]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const MySwal = withReactContent(Swal);
 
   useEffect(() => {
     buttonRegister(register);
@@ -11,6 +27,69 @@ const Auth: FC = () => {
 
   function buttonRegister(bool: boolean) {
     return setRegister(bool);
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const body = {
+      email,
+      username,
+      password,
+      image,
+    };
+
+    axios
+      .post("register", body)
+      .then((res) => {
+        const { message } = res.data;
+        MySwal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
+  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const body = {
+      email,
+      password,
+    };
+
+    axios
+      .post("login", body)
+      .then((res) => {
+        const { message, data } = res.data;
+        MySwal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCookie("token", data.token);
+            setCookie("uname", data.username);
+            dispatch(handleAuth(true));
+            navigate("/");
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
   }
 
   return (
@@ -62,16 +141,21 @@ const Auth: FC = () => {
               industry.
             </p>
             {register == false ? (
-              <form action="" className=" transition-all">
+              <form
+                onSubmit={(e) => handleLogin(e)}
+                className=" transition-all"
+              >
                 <Input
                   label="Email"
                   type="text"
                   placeholder="Enter your Email"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
                   label="Password"
                   type="password"
                   placeholder="Enter your Password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <div className=" flex justify-end transition-all">
                   <button className=" bg-button px-10 py-2 text-white rounded-3xl transition-all mt-5">
@@ -80,21 +164,27 @@ const Auth: FC = () => {
                 </div>
               </form>
             ) : (
-              <form action="" className=" transition-all">
+              <form
+                onSubmit={(e) => handleSubmit(e)}
+                className=" transition-all"
+              >
                 <Input
                   label="Email"
                   type="text"
                   placeholder="Enter your Email"
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <Input
                   label="Username"
                   type="text"
                   placeholder="Enter your Username"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 <Input
                   label="Password"
                   type="password"
                   placeholder="Enter your Password"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <div className=" flex justify-end transition-all">
                   <button className=" bg-button px-10 py-2 text-white rounded-3xl transition-all mt-5">

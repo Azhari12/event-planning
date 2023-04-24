@@ -1,13 +1,38 @@
+import withReactContent from "sweetalert2-react-content";
 import { FC, ReactNode } from "react";
 import Footer from "./Footer";
-// import Navbar from "./Navbar";
+import { useCookies } from "react-cookie";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "@/utils/Swal";
+import { useDispatch } from "react-redux";
+import { handleAuth } from "@/utils/redux/reducers/reducer";
 
 interface Props {
   children: ReactNode;
 }
 
 const Layout: FC<Props> = (props) => {
+  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const getToken = cookie.token;
   const { children } = props;
+
+  function handleLogout() {
+    MySwal.fire({
+      title: "Logout",
+      text: "Are you sure?",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie("token");
+        removeCookie("uname");
+        dispatch(handleAuth(false));
+        navigate("/");
+      }
+    });
+  }
+
   return (
     <div className="flex flex-col min-h-screen w-full ">
       <div className="drawer min-h-screen h-full">
@@ -36,22 +61,59 @@ const Layout: FC<Props> = (props) => {
                 </label>
               </div>
               <div className="flex-initial px-2 ml-10 font-bold ">
-                Event Planning
+                <Link to={"/"}>Event Planning</Link>
               </div>
               <div className="flex-1 hidden lg:block ">
                 <div className=" flex w-full justify-center font-medium">
-                  <a className=" p-5">Home</a>
-                  <a className=" p-5">My Events</a>
+                  <Link to={"/"} className=" p-5">
+                    Home
+                  </Link>
+                  <Link to={"/my-events"} className=" p-5">
+                    My Events
+                  </Link>
                 </div>
               </div>
               <div className="flex-none hidden lg:block mr-10">
-                <ul className="menu menu-horizontal">
-                  <li>
-                    <button className=" bg-white px-10 py-2 text-button rounded-md transition-all font-medium">
-                      Login
+                {getToken ? (
+                  <div className="flex">
+                    <button className=" bg-white px-5 mr-3 my-1  text-button rounded-md transition-all font-medium">
+                      Create Event
                     </button>
-                  </li>
-                </ul>
+                    <div className="dropdown dropdown-end text-button">
+                      <label
+                        tabIndex={0}
+                        className="btn btn-ghost btn-circle avatar"
+                      >
+                        <div className="w-10 rounded-full">
+                          <img src="/kirito.jpg" />
+                        </div>
+                      </label>
+                      <ul
+                        tabIndex={0}
+                        className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+                      >
+                        <li>
+                          <a className="justify-between">Profile</a>
+                        </li>
+
+                        <li>
+                          <button onClick={handleLogout}>Logout</button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : (
+                  <ul className="menu menu-horizontal">
+                    <li>
+                      <Link
+                        to={"/auth"}
+                        className=" bg-white px-10 py-2 text-button rounded-md transition-all font-medium"
+                      >
+                        Login
+                      </Link>
+                    </li>
+                  </ul>
+                )}
               </div>
             </div>
             <div className="container mx-auto bg-center bg-cover bg-no-repeat flex flex-col p-3  ">
@@ -62,19 +124,41 @@ const Layout: FC<Props> = (props) => {
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-80 bg-base-100">
-            <li>
-              <button className=" bg-button px-10 py-2 text-white rounded-3xl transition-all mt-5">
-                Sign In
-              </button>
-            </li>
-            <li>
-              <a className=" p-5">Home</a>
-            </li>
-            <li>
-              <a className=" p-5">My Events</a>
-            </li>
-          </ul>
+          {getToken ? (
+            <ul className="menu p-4 w-80 bg-base-100">
+              <li>
+                <a className=" p-5">Profile</a>
+              </li>
+              <li>
+                <a className=" p-5">Home</a>
+              </li>
+              <li>
+                <a className=" p-5">My Events</a>
+              </li>
+              <li>
+                <button className="p-5" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
+            </ul>
+          ) : (
+            <ul className="menu p-4 w-80 bg-base-100">
+              <li>
+                <Link
+                  to={"/auth"}
+                  className=" bg-button px-10 py-2 text-white rounded-3xl transition-all mt-5"
+                >
+                  Login
+                </Link>
+              </li>
+              <li>
+                <a className=" p-5">Home</a>
+              </li>
+              <li>
+                <a className=" p-5">My Events</a>
+              </li>
+            </ul>
+          )}
         </div>
       </div>
     </div>
