@@ -1,11 +1,46 @@
-import { useState, FC } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import withReactContent from "sweetalert2-react-content";
+import { useState, FC, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import Swal from "@/utils/Swal";
+
+interface datasType {
+  id: number;
+  name: string;
+  hosted_by: string;
+  date: string;
+  location: string;
+  details: string;
+  event_picture: string;
+}
 
 const Home: FC = () => {
+  const [datas, setDatas] = useState<datasType[]>([]);
+  const MySwal = withReactContent(Swal);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get("events")
+      .then((response) => {
+        const { data, message } = response.data;
+        setDatas(data);
+      })
+      .catch((er) => {
+        const { message } = er.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <Layout>
       <div className=" flex w-full sm:flex-col md:flex-row min-[400px]:flex-col">
@@ -34,18 +69,21 @@ const Home: FC = () => {
         </div>
         <div className=" flex-1">
           <div className=" flex flex-col">
-            <Link to={"/detail-event"}>
-              <Card />
-            </Link>
-            <Link to={"/detail-event"}>
-              <Card />
-            </Link>
-            <Link to={"/detail-event"}>
-              <Card />
-            </Link>
-            <Link to={"/detail-event"}>
-              <Card />
-            </Link>
+            {datas.map((data) => {
+              return (
+                <Link to={`/detail-event/${data.id}`}>
+                  <Card
+                    id={data.id}
+                    name={data.name}
+                    hosted_by={data.hosted_by}
+                    date={data.date}
+                    location={data.location}
+                    details={data.details}
+                    event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
+                  />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
