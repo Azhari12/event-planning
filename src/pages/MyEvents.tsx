@@ -11,6 +11,8 @@ interface datasType {
   name: string;
   hosted_by: string;
   date: string;
+  time: string;
+  status: string;
   location: string;
   details: string;
   event_picture: string;
@@ -31,10 +33,10 @@ const MyEvents: FC = () => {
 
   function fetchData() {
     axios
-      .get("events")
+      .get("events?page=1")
       .then((response) => {
-        const { data, message } = response.data;
-        setDatas(data);
+        const { events, message } = response.data;
+        setDatas(events);
       })
       .catch((er) => {
         const { message } = er.response.data;
@@ -157,6 +159,8 @@ const MyEvents: FC = () => {
                       name={data.name}
                       hosted_by={data.hosted_by}
                       date={data.date}
+                      time={data.time}
+                      status={data.status}
                       location={data.location}
                       details={data.details}
                       event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
@@ -172,6 +176,8 @@ const MyEvents: FC = () => {
                   id={0}
                   name={"Noah Concert Music"}
                   hosted_by={"NOAH"}
+                  time={"19.00 PM"}
+                  status={"opem"}
                   date={"17 April 2023"}
                   location={"Jakarta"}
                   details={"Details"}

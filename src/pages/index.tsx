@@ -5,12 +5,15 @@ import Card from "@/components/Card";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "@/utils/Swal";
+import { useCookies } from "react-cookie";
 
 interface datasType {
   id: number;
   name: string;
   hosted_by: string;
   date: string;
+  time: string;
+  status: string;
   location: string;
   details: string;
   event_picture: string;
@@ -19,6 +22,8 @@ interface datasType {
 const Home: FC = () => {
   const [datas, setDatas] = useState<datasType[]>([]);
   const MySwal = withReactContent(Swal);
+  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const getToken = cookie.token;
 
   useEffect(() => {
     fetchData();
@@ -26,9 +31,14 @@ const Home: FC = () => {
 
   function fetchData() {
     axios
-      .get("events")
+      .get("events?page=1", {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((response) => {
         const { data, message } = response.data;
+        alert(data);
         setDatas(data);
       })
       .catch((er) => {
@@ -77,6 +87,8 @@ const Home: FC = () => {
                     name={data.name}
                     hosted_by={data.hosted_by}
                     date={data.date}
+                    time={data.time}
+                    status={data.status}
                     location={data.location}
                     details={data.details}
                     event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
