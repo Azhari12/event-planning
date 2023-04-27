@@ -1,16 +1,51 @@
+import withReactContent from "sweetalert2-react-content";
 import { FC, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Link } from "react-router-dom";
 import Card from "@/components/Card";
+import axios from "axios";
+import Swal from "@/utils/Swal";
+
+interface datasType {
+  id: number;
+  name: string;
+  hosted_by: string;
+  date: string;
+  location: string;
+  details: string;
+  event_picture: string;
+}
 
 const MyEvents: FC = () => {
   const [page, setPage] = useState<string>("attending");
+  const [datas, setDatas] = useState<datasType[]>([]);
+  const MySwal = withReactContent(Swal);
 
-  useEffect(() => {}, [page]);
+  useEffect(() => {
+    fetchData();
+  }, [page]);
 
   function handlePage(page: string) {
     setPage(page);
   }
+
+  function fetchData() {
+    axios
+      .get("events")
+      .then((response) => {
+        const { data, message } = response.data;
+        setDatas(data);
+      })
+      .catch((er) => {
+        const { message } = er.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+  }
+
   return (
     <Layout>
       <div className=" flex w-full sm:flex-col md:flex-row min-[400px]:flex-col p-10 transition-all">
@@ -114,23 +149,34 @@ const MyEvents: FC = () => {
         <div className=" flex-1">
           {page == "attending" ? (
             <div className=" flex flex-col transition-all">
-              <Link to={"/"}>
-                <Card />
-              </Link>
-              <Link to={"/"}>
-                <Card />
-              </Link>
-              <Link to={"/"}>
-                <Card />
-              </Link>
-              <Link to={"/"}>
-                <Card />
-              </Link>
+              {datas.map((data) => {
+                return (
+                  <Link to={`/detail-event/${data.id}`}>
+                    <Card
+                      id={data.id}
+                      name={data.name}
+                      hosted_by={data.hosted_by}
+                      date={data.date}
+                      location={data.location}
+                      details={data.details}
+                      event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
+                    />
+                  </Link>
+                );
+              })}
             </div>
           ) : (
             <div className=" flex flex-col transition-all">
               <Link to={"/"}>
-                <Card />
+                <Card
+                  id={0}
+                  name={"Noah Concert Music"}
+                  hosted_by={"NOAH"}
+                  date={"17 April 2023"}
+                  location={"Jakarta"}
+                  details={"Details"}
+                  event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
+                />{" "}
               </Link>
             </div>
           )}

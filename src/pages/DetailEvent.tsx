@@ -1,5 +1,9 @@
+import withReactContent from "sweetalert2-react-content";
 import Layout from "@/components/Layout";
+import axios from "axios";
 import { FC, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Swal from "@/utils/Swal";
 
 interface tikcetType {
   default_price: number;
@@ -8,18 +12,112 @@ interface tikcetType {
   qty: number;
 }
 
+interface detailType {
+  title: string;
+  details: string;
+  hosted_by: string;
+  date: string;
+  time: string;
+  status: string;
+  category: string;
+  location: string;
+  image: string;
+  reviews: [
+    {
+      username: string;
+      user_picture: string;
+      review: string;
+    }
+  ];
+}
+
+interface ticketType {
+  ticket_category: string;
+  ticket_price: number;
+  ticket_quantity: number;
+}
+
+interface attendeesType {
+  id: number;
+  user_id: number;
+  event_id: number;
+  event_category: number;
+  quantity: number;
+}
+
 const DetailEvent: FC = () => {
-  const tickets: tikcetType[] = [];
   const [tiecketArray, setTicetArray] = useState<tikcetType[]>([]);
   const [tikectselect, setTicketSelect] = useState<string>("");
   const [total, setTotal] = useState<number>(0);
+  const { id } = useParams();
+  const [data, setData] = useState<detailType>();
+  const [ticketDatas, setTicketDatas] = useState<ticketType[]>([]);
+  const [attendees, setAttendees] = useState<attendeesType[]>([]);
+  const MySwal = withReactContent(Swal);
+  const [qtyAllticket, setQtyAllTicket] = useState<number>(450);
 
   useEffect(() => {
     console.log(tikectselect);
     console.log(tiecketArray);
-
+    console.log(qtyAllticket);
+    fetchData();
     // addTicket(tikectselect);
   }, [tiecketArray]);
+
+  function fetchData() {
+    axios
+      .get(`events/${id}`)
+      .then((res) => {
+        const { data, message } = res.data;
+        setData(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+
+    // get attendess data by event id
+    axios
+      .get(`events/${id}/attendees`)
+      .then((res) => {
+        const { data, message } = res.data;
+        setAttendees(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+
+    //get ticket datas by event id
+    axios
+      .get(`tickets/${id}`)
+      .then((res) => {
+        const { data, message } = res.data;
+        setTicketDatas(data);
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        });
+      });
+
+    // if (ticketDatas) {
+    //   ticketDatas.map((data) => {
+    //     return setQtyAllTicket(data.ticket_quantity + qtyAllticket);
+    //   });
+    // }
+  }
 
   function addTicket(categories: string) {
     console.log(categories);
@@ -39,7 +137,7 @@ const DetailEvent: FC = () => {
       qty: 1,
     };
 
-    if (categories == "vip") {
+    if (categories == "VIP") {
       tempTikcet.push(vip);
       setTotal(total + vip.price);
     } else {
@@ -106,30 +204,18 @@ const DetailEvent: FC = () => {
             className=" w-full h-full max-w-md max-h-[28rem] rounded-lg shadow-2xl object-cover"
           />
           <div className=" lg:pl-14">
-            <h1 className="text-5xl font-bold capitalize">
-              NOAH music concert
-            </h1>
-            <p className="py-6 text-[#4B5262]">
-              Nowadays, it isn’t uncommon to see lenders rapidly adopting a
-              digital lending strategy to streamline the lending process
-              Gorgeous, high-quality design system for mobile, tablet & a few
-              reasons digital Nowadays, it isn’t uncommon to see lenders rapidly
-              adopting a digital lending strategy to streamline the lending
-              process Gorgeous, high-quality design system for mobile, tablet &
-              a few reasons digital Nowadays, it isn’t uncommon to see lenders
-              rapidly adopting a digital lending strategy to streamline the
-              lending process Gorgeous, high-quality design system for mobile,
-              tablet & a few reasons digital
-            </p>
+            <h1 className="text-5xl font-bold capitalize">{data?.title}</h1>
+            <p className="py-6 text-[#4B5262]">{data?.details}</p>
             <div className=" flex justify-around text-lg font-bold">
               <div className=" w-48">
-                <p>100 Joined</p>
+                <p>{attendees.length} Joined</p>
                 <p className="text-[#4B5262] text-sm font-normal">
-                  100 People were joined this event, we still waiting
+                  {attendees.length} People were joined this event, we still
+                  waiting
                 </p>
               </div>
               <div>
-                <p>400 Ticket Alvailable</p>
+                <p>{qtyAllticket} Ticket Alvailable</p>
                 <p className="text-[#4B5262] text-sm font-normal">
                   Don't let you run out of tickets
                 </p>
@@ -137,10 +223,14 @@ const DetailEvent: FC = () => {
             </div>
             <div className=" flex flex-col border-2 rounded-lg p-5 mt-5">
               <p className=" font-bold tex-md">Time</p>
-              <p>Monday, April 17 | 07.00 PM</p>
+              <p>
+                {data?.date} | {data?.time}
+              </p>
               <p className=" font-bold tex-md">Location</p>
-              <p>Gelora Bung Karno - Jakarta</p>
-              <p className=" font-bold tex-md mt-10">Hosted by NOAH</p>
+              <p>{data?.location}</p>
+              <p className=" font-bold tex-md mt-10">
+                Hosted by {data?.hosted_by}
+              </p>
             </div>
           </div>
         </div>
@@ -156,8 +246,15 @@ const DetailEvent: FC = () => {
                   <option disabled selected value={""}>
                     Choose Ticket
                   </option>
-                  <option value={"vip"}>V.I.P.</option>
-                  <option value={"reguler"}>Reguler</option>
+                  {ticketDatas.map((data) => {
+                    return (
+                      <option value={data.ticket_category}>
+                        {data.ticket_category}
+                      </option>
+                    );
+                  })}
+
+                  {/* <option value={"reguler"}>Reguler</option> */}
                 </select>
                 <button
                   className="btn ml-2 bg-button rounded-lg"
@@ -246,41 +343,17 @@ const DetailEvent: FC = () => {
         <div className="m-4">
           <p className=" text-lg font-bold ">Attendees</p>
           <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-            <div className=" flex flex-col justify-center items-center p-10">
-              <img
-                src="/kirito.jpg"
-                className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-              />
-              <p>kirito</p>
-            </div>
-            <div className=" flex flex-col justify-center items-center p-10">
-              <img
-                src="/kirito.jpg"
-                className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-              />
-              <p>kirito</p>
-            </div>
-            <div className=" flex flex-col justify-center items-center p-10">
-              <img
-                src="/kirito.jpg"
-                className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-              />
-              <p>kirito</p>
-            </div>
-            <div className=" flex flex-col justify-center items-center p-10">
-              <img
-                src="/kirito.jpg"
-                className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-              />
-              <p>kirito</p>
-            </div>
-            <div className=" flex flex-col justify-center items-center p-10">
-              <img
-                src="/kirito.jpg"
-                className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-              />
-              <p>kirito</p>
-            </div>
+            {attendees.map((data) => {
+              return (
+                <div className=" flex flex-col justify-center items-center p-10">
+                  <img
+                    src="/kirito.jpg"
+                    className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
+                  />
+                  <p>kirito</p>
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="m-4">
@@ -303,22 +376,22 @@ const DetailEvent: FC = () => {
                 </button>
               </div>
             </div>
-            <div className="flex items-center">
-              <div className=" flex-initial max-w-[10rem]">
-                <img
-                  src="/kirito.jpg"
-                  className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
-                />
-              </div>
-              <div className="bg-[#F7F8F9] flex p-5 flex-col">
-                <p className=" text-lg font-bold">Jenny</p>
-                <p>
-                  Lorem ipsum dolor sit amet, coetur adipiscing elit ut aliquam,
-                  purus sit amet luctus Lorem ipsum dolor sit amet aliquam,
-                  purus sit amet luctus{" "}
-                </p>
-              </div>
-            </div>
+            {data?.reviews.map((data) => {
+              return (
+                <div className="flex items-center">
+                  <div className=" flex-initial max-w-[10rem]">
+                    <img
+                      src="/kirito.jpg"
+                      className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
+                    />
+                  </div>
+                  <div className="bg-[#F7F8F9] flex p-5 flex-col">
+                    <p className=" text-lg font-bold">{data.username}</p>
+                    <p>{data.review}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
