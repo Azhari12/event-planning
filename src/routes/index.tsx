@@ -40,7 +40,7 @@ const Router: FC = () => {
       element: <Auth />,
     },
     {
-      path: "/detail-event",
+      path: "/detail-event/:id",
       element: getToken ? <DetailEvent /> : <Navigate to="/auth" />,
     },
     {
