@@ -37,9 +37,9 @@ const Home: FC = () => {
         },
       })
       .then((response) => {
-        const { data, message } = response.data;
-        alert(data);
-        setDatas(data);
+        const { events, message } = response.data;
+        alert(events);
+        setDatas(events);
       })
       .catch((er) => {
         const { message } = er.response.data;
