@@ -19,8 +19,9 @@ import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
 import DetailHostingEvent from "@/pages/DetailHostingEvent";
 import UpdateEvent from "@/pages/UpdateEvent";
 
-axios.defaults.baseURL =
-  "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.1";
+// axios.defaults.baseURL =
+//   "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.1";
+axios.defaults.baseURL = "https://peterzalai.biz.id";
 
 const Router: FC = () => {
   const [theme, setTheme] = useState<string>("dark");

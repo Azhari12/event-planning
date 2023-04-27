@@ -4,6 +4,7 @@ import axios from "axios";
 import { FC, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "@/utils/Swal";
+import { useCookies } from "react-cookie";
 
 interface tikcetType {
   default_price: number;
@@ -55,6 +56,8 @@ const DetailEvent: FC = () => {
   const [attendees, setAttendees] = useState<attendeesType[]>([]);
   const MySwal = withReactContent(Swal);
   const [qtyAllticket, setQtyAllTicket] = useState<number>(450);
+  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const getToken = cookie.token;
 
   useEffect(() => {
     console.log(tikectselect);
@@ -66,7 +69,11 @@ const DetailEvent: FC = () => {
 
   function fetchData() {
     axios
-      .get(`events/${id}`)
+      .get(`events/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((res) => {
         const { data, message } = res.data;
         setData(data);
@@ -82,7 +89,11 @@ const DetailEvent: FC = () => {
 
     // get attendess data by event id
     axios
-      .get(`events/${id}/attendees`)
+      .get(`events/${id}/attendees`, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((res) => {
         const { data, message } = res.data;
         setAttendees(data);
@@ -98,7 +109,11 @@ const DetailEvent: FC = () => {
 
     //get ticket datas by event id
     axios
-      .get(`tickets/${id}`)
+      .get(`tickets/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((res) => {
         const { data, message } = res.data;
         setTicketDatas(data);

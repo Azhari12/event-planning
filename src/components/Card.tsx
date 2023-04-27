@@ -5,13 +5,24 @@ interface Props {
   name: string;
   hosted_by: string;
   date: string;
+  time: string;
+  status: string;
   location: string;
   details: string;
   event_picture: string;
 }
 
 const Card: FC<Props> = (props) => {
-  const { name, hosted_by, date, location, details, event_picture } = props;
+  const {
+    name,
+    hosted_by,
+    date,
+    time,
+    status,
+    location,
+    details,
+    event_picture,
+  } = props;
   return (
     <div className="card lg:card-side hover:bg-gradient-to-r from-white via-[#E5EFFF] via-50% to-white to-100% pt-10 lg:p-10 w-full">
       <figure className=" lg:w-1/3 md:w-full sm:flex-row min-[400px]:w-full">
@@ -21,9 +32,11 @@ const Card: FC<Props> = (props) => {
         <div className="flex min-[400px]:flex-col sm:flex-col lg:flex-row justify-between max-w-full relative">
           <p className="card-title truncate font-bold capitalize flex min-[400px]:flex-col lg:flex-row">
             {name}
-            <div className="badge badge-success gap-2">Open</div>
+            <div className="badge badge-success gap-2">{status}</div>
           </p>
-          <p className="font-semibold text-sm lg:text-end">{date} | 07.00 PM</p>
+          <p className="font-semibold text-sm lg:text-end">
+            {date} | {time}
+          </p>
         </div>
         <div className=" text-sm text-[#1E1E1E] flex-initial h-full">
           <p className="line-clamp-5">{details}</p>
