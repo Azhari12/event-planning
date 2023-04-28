@@ -75,10 +75,13 @@ const Layout: FC<Props> = (props) => {
               </div>
               <div className="flex-none hidden lg:block mr-10">
                 {getToken ? (
-                  <div className="flex">
-                    <button className=" bg-white px-5 mr-3 my-1  text-button rounded-md transition-all font-medium">
+                  <div className="flex justify-center items-center">
+                    <Link
+                      to={"/create-event"}
+                      className=" bg-white px-5 mr-3 my-1 text-button rounded-md transition-all font-semibold p-2"
+                    >
                       Create Event
-                    </button>
+                    </Link>
                     <div className="dropdown dropdown-end text-button">
                       <label
                         tabIndex={0}

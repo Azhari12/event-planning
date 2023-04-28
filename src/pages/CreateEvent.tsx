@@ -1,38 +1,81 @@
 import { InputForm } from "@/components/Input";
 import Layout from "@/components/Layout";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, FormEvent } from "react";
+import React from "react";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { id, te } from "date-fns/locale";
+import { format } from "date-fns";
 
 interface ticketCategoriesType {
-  ticketName: string;
-  ticketPrice: number;
-  ticketQty: number;
+  ticket_category: string;
+  ticket_price: number;
+  ticket_quantitiy: number;
 }
 
+interface EventsType {
+  title: string;
+  description: string;
+  hosted_by: string;
+  date: string | undefined | null;
+  time: string | undefined | null;
+  status: string;
+  category: string;
+  location: string;
+  event_picture: string;
+  tickets: {
+    ticket_category: string;
+    ticket_price: number;
+    ticket_quantitiy: number;
+  }[];
+}
 const CreateEvent: FC = () => {
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [objSubmit, setObjSubmit] = useState<EventsType>({
+    title: "",
+    description: "",
+    hosted_by: "",
+    date: "",
+    time: "",
+    status: "",
+    category: "",
+    location: "",
+    event_picture: "",
+    tickets: [
+      {
+        ticket_category: "",
+        ticket_price: 0,
+        ticket_quantitiy: 0,
+      },
+    ],
+  });
   const [ticketCategories, setTicketCategories] = useState<
     ticketCategoriesType[]
   >([
     {
-      ticketName: "",
-      ticketPrice: 0,
-      ticketQty: 0,
+      ticket_category: "",
+      ticket_price: 0,
+      ticket_quantitiy: 0,
     },
   ]);
 
   useEffect(() => {
     console.log(ticketCategories);
-  }, [ticketCategories]);
+    console.log(objSubmit);
+    console.log(startDate);
+  }, [ticketCategories, objSubmit, startDate]);
 
   function addTicketCategoris() {
     console.log(ticketCategories);
-    const temp = [...ticketCategories];
+    const temp = [...objSubmit.tickets];
     temp.push({
-      ticketName: "",
-      ticketPrice: 0,
-      ticketQty: 0,
+      ticket_category: "",
+      ticket_price: 0,
+      ticket_quantitiy: 0,
     });
     console.log(temp);
-    setTicketCategories(temp);
+    setObjSubmit({ ...objSubmit, tickets: temp });
   }
 
   function deleteTicket() {
@@ -41,12 +84,52 @@ const CreateEvent: FC = () => {
 
     setTicketCategories(temp);
   }
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault;
+  }
+
+  function handleDate(date: Date | null) {
+    const tes = date
+      ?.toLocaleDateString("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$1-$2");
+    setStartDate(date);
+    console.log(tes);
+    setObjSubmit({ ...objSubmit, date: tes });
+    // setObjSubmit({ ...objSubmit, time: timeConv });
+  }
+
+  function handleTime(date: Date | null) {
+    const timeConv = date?.toLocaleTimeString("en-US", { hour12: false });
+    setObjSubmit({ ...objSubmit, time: timeConv });
+  }
+  // function handleChange(
+  //   value: (string & number) | undefined,
+  //   key: keyof typeof objSubmit
+  // ) {
+  //   let temp = { ...objSubmit };
+  //   temp[key] = value;
+  //   setObjSubmit(temp);
+  // }
+
   return (
     <Layout>
       <div className="lg:p-10">
         <p className=" text-2xl font-bold text-button">Create Event</p>
         <div className=" px-5 py-3 lg:px-14 lg:py-10 bg-[#F5F5F5] w-full">
-          <InputForm type="text" placeholder="Event Title" label="Title" />
+          {/* <form onSubmit={(e) => handleSubmit(e)}> */}
+          <InputForm
+            type="text"
+            placeholder="Event Title"
+            label="Title"
+            onChange={(e) =>
+              setObjSubmit({ ...objSubmit, title: e.target.value })
+            }
+          />
           <div className="form-control">
             <label className="label">
               <span className="label-text">Description</span>
@@ -54,21 +137,32 @@ const CreateEvent: FC = () => {
             <textarea
               className="textarea textarea-bordered h-24 rounded-xl"
               placeholder="Write Your Description Event Here"
+              onChange={(e) =>
+                setObjSubmit({ ...objSubmit, description: e.target.value })
+              }
             ></textarea>
           </div>
           <div className=" grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 min-[400px]:grid-cols-1">
             <div className=" lg:mr-5">
-              <InputForm
-                type="date"
-                placeholder="Event Schedule Date"
-                label="Date"
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => handleDate(date)}
+                dateFormat="yyyy-MM-dd"
               />
             </div>
             <div className=" lg:mx-5">
-              <InputForm
-                type="time"
-                placeholder="Event Schedule Time"
-                label="Time"
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => handleTime(date)}
+                showTimeSelect
+                showTimeSelectOnly
+                timeIntervals={15}
+                timeCaption="Time"
+                locale={id}
+                dateFormat="p"
+                timeFormat="p"
+                // minDate={new Date()}
+                // maxDate={moment().tz("Asia/Jakarta").endOf("day").toDate()}
               />
             </div>
             <div className="form-control w-full">
@@ -76,9 +170,17 @@ const CreateEvent: FC = () => {
                 <span className="label-text">Status</span>
               </label>
               <div className="input-group w-full rounded-xl">
-                <select className="select select-bordered w-full ">
-                  <option selected>Close</option>
-                  <option>Open</option>
+                <select
+                  className="select select-bordered w-full "
+                  onChange={(e) => {
+                    setObjSubmit({ ...objSubmit, status: e.target.value });
+                  }}
+                  // value={tikectselect}
+                >
+                  <option selected value="close">
+                    Close
+                  </option>
+                  <option value="open">Open</option>
                 </select>
               </div>
             </div>
@@ -87,14 +189,19 @@ const CreateEvent: FC = () => {
                 <span className="label-text">Categories</span>
               </label>
               <div className="input-group w-full ">
-                <select className="select select-bordered w-full">
+                <select
+                  className="select select-bordered w-full"
+                  onChange={(e) => {
+                    setObjSubmit({ ...objSubmit, category: e.target.value });
+                  }}
+                >
                   <option selected disabled>
                     Select Categories
                   </option>
-                  <option>Music</option>
-                  <option>Art</option>
-                  <option>Game</option>
-                  <option>IT</option>
+                  <option value={"music"}>Music</option>
+                  <option value={"art"}>Art</option>
+                  <option value={"game"}>Game</option>
+                  <option value={"it"}>IT</option>
                 </select>
               </div>
             </div>
@@ -103,6 +210,9 @@ const CreateEvent: FC = () => {
             type="text"
             placeholder="Event Location"
             label="Location"
+            onChange={(e) => {
+              setObjSubmit({ ...objSubmit, location: e.target.value });
+            }}
           />
           <div className="form-control">
             <label className="label flex-row justify-start">
@@ -117,7 +227,7 @@ const CreateEvent: FC = () => {
                 </span>
               </button>
             </label>
-            {ticketCategories.map((data) => {
+            {objSubmit.tickets.map((data, index) => {
               return (
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 min-[400px]:grid-cols-1 pb-3 border-b-2">
                   <div className=" lg:pr-3">
@@ -125,6 +235,22 @@ const CreateEvent: FC = () => {
                       type="text"
                       placeholder="Ticket Name"
                       label="Ticket Name"
+                      defaultValue={data.ticket_category}
+                      onChange={(e) => {
+                        const price = data.ticket_price;
+                        const qty = data.ticket_quantitiy;
+                        setObjSubmit({
+                          ...objSubmit,
+                          tickets: [
+                            { ...objSubmit.tickets[index] },
+                            {
+                              ticket_category: e.target.value,
+                              ticket_price: price,
+                              ticket_quantitiy: qty,
+                            },
+                          ],
+                        });
+                      }}
                     />
                   </div>
                   <div className=" lg:px-3">
@@ -132,10 +258,44 @@ const CreateEvent: FC = () => {
                       type="text"
                       placeholder="Ticket Price"
                       label="Price"
+                      defaultValue={data.ticket_price}
+                      onChange={(e) => {
+                        const category = data.ticket_category;
+                        const qty = data.ticket_quantitiy;
+                        setObjSubmit({
+                          ...objSubmit,
+                          tickets: [
+                            {
+                              ticket_category: category,
+                              ticket_price: parseInt(e.target.value),
+                              ticket_quantitiy: qty,
+                            },
+                          ],
+                        });
+                      }}
                     />
                   </div>
                   <div className=" lg:pl-3 flex justify-center items-center ">
-                    <InputForm type="text" placeholder="Quantity" label="Qty" />
+                    <InputForm
+                      type="text"
+                      placeholder="Quantity"
+                      label="Qty"
+                      defaultValue={data.ticket_quantitiy}
+                      onChange={(e) => {
+                        const category = data.ticket_category;
+                        const price = data.ticket_price;
+                        setObjSubmit({
+                          ...objSubmit,
+                          tickets: [
+                            {
+                              ticket_category: category,
+                              ticket_price: price,
+                              ticket_quantitiy: parseInt(e.target.value),
+                            },
+                          ],
+                        });
+                      }}
+                    />
                     <button onClick={deleteTicket}>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -171,6 +331,7 @@ const CreateEvent: FC = () => {
               Launch Now
             </button>
           </div>
+          {/* </form> */}
         </div>
       </div>
     </Layout>
