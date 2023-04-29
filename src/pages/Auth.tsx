@@ -3,7 +3,7 @@ import { Input } from "@/components/Input";
 import React, { FC, useState, useEffect } from "react";
 import Swal from "@/utils/Swal";
 import axios from "axios";
-import { useCookies } from "react-cookie";
+import { Cookies, useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { handleAuth } from "@/utils/redux/reducers/reducer";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ const Auth: FC = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [image, setImage] = useState<string>("https://peterzalai.jpg");
-  const [, setCookie] = useCookies(["token", "uname"]);
+  const [cookie, setCookie] = useCookies(["token", "uname"]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,7 +23,8 @@ const Auth: FC = () => {
   useEffect(() => {
     buttonRegister(register);
     console.log(register);
-  }, [register]);
+    console.log(cookie);
+  }, [register, cookie]);
 
   function buttonRegister(bool: boolean) {
     return setRegister(bool);
@@ -74,9 +75,18 @@ const Auth: FC = () => {
           text: message,
           showCancelButton: false,
         }).then((result) => {
+          axios
+            .get("users", {
+              headers: {
+                Authorization: `Bearer ${data.token}`,
+              },
+            })
+            .then((res) => {
+              const { data } = res.data;
+              setCookie("uname", data.username);
+            });
           if (result.isConfirmed) {
             setCookie("token", data.token);
-            setCookie("uname", data.username);
             dispatch(handleAuth(true));
             navigate("/");
           }

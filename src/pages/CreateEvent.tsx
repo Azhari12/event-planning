@@ -41,7 +41,7 @@ const CreateEvent: FC = () => {
   const [objSubmit, setObjSubmit] = useState<EventsType>({
     title: "",
     description: "",
-    hosted_by: "NOAH",
+    hosted_by: "",
     date: "",
     time: "",
     status: "",
@@ -92,6 +92,7 @@ const CreateEvent: FC = () => {
   }
 
   function handleSubmit() {
+    console.log(getToken);
     axios
       .post("events", objSubmit, {
         headers: {

@@ -19,9 +19,9 @@ import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
 import DetailHostingEvent from "@/pages/DetailHostingEvent";
 import UpdateEvent from "@/pages/UpdateEvent";
 
-// axios.defaults.baseURL =
-//   "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.1";
-axios.defaults.baseURL = "https://peterzalai.biz.id";
+axios.defaults.baseURL =
+  "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.1";
+// axios.defaults.baseURL = "https://peterzalai.biz.id";
 
 const Router: FC = () => {
   const [theme, setTheme] = useState<string>("dark");
@@ -70,6 +70,7 @@ const Router: FC = () => {
     // removeCookie("tkn");
     // removeCookie("uname");
     console.log(getToken);
+    console.log(cookie);
     if (getToken) {
       dispatch(
         handleAuth({ isLoggedIn: true, uname: cookie.uname, token: getToken })
