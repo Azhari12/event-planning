@@ -96,6 +96,9 @@ const Layout: FC<Props> = (props) => {
                         tabIndex={0}
                         className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
                       >
+                        <li className=" border-b-2 font-semibold  text-lg">
+                          <p>{cookie.uname}</p>
+                        </li>
                         <li>
                           <a className="justify-between">Profile</a>
                         </li>
@@ -130,6 +133,14 @@ const Layout: FC<Props> = (props) => {
           <label htmlFor="my-drawer-3" className="drawer-overlay"></label>
           {getToken ? (
             <ul className="menu p-4 w-80 bg-base-100">
+              <li>
+                <Link
+                  to={"/create-event"}
+                  className=" bg-button px-10 py-2 text-white rounded-3xl transition-all mt-5"
+                >
+                  Create Event
+                </Link>
+              </li>
               <li>
                 <a className=" p-5">Profile</a>
               </li>
