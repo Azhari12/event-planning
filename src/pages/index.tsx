@@ -8,14 +8,14 @@ import Swal from "@/utils/Swal";
 import { useCookies } from "react-cookie";
 
 interface datasType {
-  id: number;
-  name: string;
+  event_id: number;
+  title: string;
   hosted_by: string;
   date: string;
   time: string;
   status: string;
   location: string;
-  details: string;
+  description: string;
   event_picture: string;
 }
 
@@ -37,9 +37,10 @@ const Home: FC = () => {
         },
       })
       .then((response) => {
-        const { events, message } = response.data;
-        alert(events);
-        setDatas(events);
+        const { data, message } = response.data;
+        alert(data);
+        console.log(data);
+        setDatas(data);
       })
       .catch((er) => {
         const { message } = er.response.data;
@@ -81,16 +82,16 @@ const Home: FC = () => {
           <div className=" flex flex-col">
             {datas.map((data) => {
               return (
-                <Link to={`/detail-event/${data.id}`}>
+                <Link to={`/detail-event/${data.event_id}`}>
                   <Card
-                    id={data.id}
-                    name={data.name}
+                    id={data.event_id}
+                    name={data.title}
                     hosted_by={data.hosted_by}
                     date={data.date}
                     time={data.time}
                     status={data.status}
                     location={data.location}
-                    details={data.details}
+                    details={data.description}
                     event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
                   />
                 </Link>

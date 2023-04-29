@@ -15,7 +15,7 @@ interface tikcetType {
 
 interface detailType {
   title: string;
-  details: string;
+  description: string;
   hosted_by: string;
   date: string;
   time: string;
@@ -76,6 +76,7 @@ const DetailEvent: FC = () => {
       })
       .then((res) => {
         const { data, message } = res.data;
+        console.log(data);
         setData(data);
       })
       .catch((error) => {
@@ -88,24 +89,24 @@ const DetailEvent: FC = () => {
       });
 
     // get attendess data by event id
-    axios
-      .get(`events/${id}/attendees`, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
-      .then((res) => {
-        const { data, message } = res.data;
-        setAttendees(data);
-      })
-      .catch((error) => {
-        const { message } = error.response.data;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
-      });
+    // axios
+    //   .get(`events/${id}/attendees`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     const { data, message } = res.data;
+    //     setAttendees(data);
+    //   })
+    //   .catch((error) => {
+    //     const { message } = error.response.data;
+    //     MySwal.fire({
+    //       title: "Failed",
+    //       text: message,
+    //       showCancelButton: false,
+    //     });
+    //   });
 
     //get ticket datas by event id
     axios
@@ -117,6 +118,7 @@ const DetailEvent: FC = () => {
       .then((res) => {
         const { data, message } = res.data;
         setTicketDatas(data);
+        console.log(ticketDatas);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -220,7 +222,7 @@ const DetailEvent: FC = () => {
           />
           <div className=" lg:pl-14">
             <h1 className="text-5xl font-bold capitalize">{data?.title}</h1>
-            <p className="py-6 text-[#4B5262]">{data?.details}</p>
+            <p className="py-6 text-[#4B5262]">{data?.description}</p>
             <div className=" flex justify-around text-lg font-bold">
               <div className=" w-48">
                 <p>{attendees.length} Joined</p>
@@ -358,17 +360,19 @@ const DetailEvent: FC = () => {
         <div className="m-4">
           <p className=" text-lg font-bold ">Attendees</p>
           <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-            {attendees.map((data) => {
-              return (
-                <div className=" flex flex-col justify-center items-center p-10">
-                  <img
-                    src="/kirito.jpg"
-                    className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
-                  />
-                  <p>kirito</p>
-                </div>
-              );
-            })}
+            {attendees !== null
+              ? attendees.map((data) => {
+                  return (
+                    <div className=" flex flex-col justify-center items-center p-10">
+                      <img
+                        src="/kirito.jpg"
+                        className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
+                      />
+                      <p>kirito</p>
+                    </div>
+                  );
+                })
+              : "tes"}
           </div>
         </div>
         <div className="m-4">
@@ -391,22 +395,24 @@ const DetailEvent: FC = () => {
                 </button>
               </div>
             </div>
-            {data?.reviews.map((data) => {
-              return (
-                <div className="flex items-center">
-                  <div className=" flex-initial max-w-[10rem]">
-                    <img
-                      src="/kirito.jpg"
-                      className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
-                    />
-                  </div>
-                  <div className="bg-[#F7F8F9] flex p-5 flex-col">
-                    <p className=" text-lg font-bold">{data.username}</p>
-                    <p>{data.review}</p>
-                  </div>
-                </div>
-              );
-            })}
+            {data?.reviews
+              ? data?.reviews.map((data) => {
+                  return (
+                    <div className="flex items-center">
+                      <div className=" flex-initial max-w-[10rem]">
+                        <img
+                          src="/kirito.jpg"
+                          className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
+                        />
+                      </div>
+                      <div className="bg-[#F7F8F9] flex p-5 flex-col">
+                        <p className=" text-lg font-bold">{data.username}</p>
+                        <p>{data.review}</p>
+                      </div>
+                    </div>
+                  );
+                })
+              : "tes"}
           </div>
         </div>
       </div>
