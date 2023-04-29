@@ -8,7 +8,7 @@ import Swal from "@/utils/Swal";
 import { useCookies } from "react-cookie";
 
 interface datasType {
-  id: number;
+  event_id: number;
   title: string;
   hosted_by: string;
   date: string;
@@ -39,6 +39,7 @@ const Home: FC = () => {
       .then((response) => {
         const { data, message } = response.data;
         alert(data);
+        console.log(data);
         setDatas(data);
       })
       .catch((er) => {
@@ -81,9 +82,9 @@ const Home: FC = () => {
           <div className=" flex flex-col">
             {datas.map((data) => {
               return (
-                <Link to={`/detail-event/${data.id}`}>
+                <Link to={`/detail-event/${data.event_id}`}>
                   <Card
-                    id={data.id}
+                    id={data.event_id}
                     name={data.title}
                     hosted_by={data.hosted_by}
                     date={data.date}

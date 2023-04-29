@@ -1,5 +1,5 @@
 import withReactContent from "sweetalert2-react-content";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import Footer from "./Footer";
 import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
@@ -27,6 +27,7 @@ const Layout: FC<Props> = (props) => {
       if (result.isConfirmed) {
         removeCookie("token");
         removeCookie("uname");
+        console.log(cookie);
         dispatch(handleAuth(false));
         navigate("/");
       }
