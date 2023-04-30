@@ -23,7 +23,6 @@ const Auth: FC = () => {
   useEffect(() => {
     buttonRegister(register);
     console.log(register);
-    console.log(cookie);
   }, [register, cookie]);
 
   function buttonRegister(bool: boolean) {

@@ -23,7 +23,13 @@ interface detailType {
   status: string;
   category: string;
   location: string;
-  image: string;
+  event_picture: string;
+  attendances: [
+    {
+      username: string;
+      user_picture: string;
+    }
+  ];
   reviews: [
     {
       username: string;
@@ -252,10 +258,10 @@ const DetailEvent: FC = () => {
             <p className="py-6 text-[#4B5262]">{data?.description}</p>
             <div className=" flex justify-around text-lg font-bold">
               <div className=" w-48">
-                <p>{attendees.length} Joined</p>
+                <p>{data?.attendances.length} Joined</p>
                 <p className="text-[#4B5262] text-sm font-normal">
-                  {attendees.length} People were joined this event, we still
-                  waiting
+                  {data?.attendances.length} People were joined this event, we
+                  still waiting
                 </p>
               </div>
               <div>
@@ -452,15 +458,15 @@ const DetailEvent: FC = () => {
         <div className="m-4">
           <p className=" text-lg font-bold ">Attendees</p>
           <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-            {attendees !== null
-              ? attendees.map((data) => {
+            {data?.attendances !== null
+              ? data?.attendances.map((data) => {
                   return (
                     <div className=" flex flex-col justify-center items-center p-10">
                       <img
                         src="/kirito.jpg"
                         className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
                       />
-                      <p>kirito</p>
+                      <p>{data.username}</p>
                     </div>
                   );
                 })
