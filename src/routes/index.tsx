@@ -61,7 +61,7 @@ const Router: FC = () => {
       element: getToken ? <DetailHostingEvent /> : <Navigate to="/auth" />,
     },
     {
-      path: "/update-event",
+      path: "/update-event/:id",
       element: getToken ? <UpdateEvent /> : <Navigate to="/auth" />,
     },
   ]);
