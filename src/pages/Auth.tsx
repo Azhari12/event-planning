@@ -13,6 +13,7 @@ const Auth: FC = () => {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
   const [image, setImage] = useState<string>("https://peterzalai.jpg");
   const [cookie, setCookie] = useCookies(["token", "uname"]);
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const Auth: FC = () => {
     const body = {
       email,
       username,
+      phone,
       password,
       image,
     };
@@ -108,10 +110,10 @@ const Auth: FC = () => {
           <img
             src="/event.jpg"
             alt=""
-            className=" objec-fill w-full h-full rounded-3xl"
+            className=" objec-fill w-full h-[34rem] rounded-3xl"
           />
         </div>
-        <div className=" flex flex-col h-full items-center md:px-20 lg:px-20 min-[400px]:px-0 ">
+        <div className=" flex flex-col min-[400px]:mb-10  md:mb-0 h-full items-center md:px-20 lg:px-20 min-[400px]:px-0 ">
           <div className=" w-full flex flex-col justify-center items-center">
             <p className=" text-4xl text-button font-bold text-right">
               Event Planning
@@ -188,6 +190,12 @@ const Auth: FC = () => {
                   type="text"
                   placeholder="Enter your Username"
                   onChange={(e) => setUsername(e.target.value)}
+                />
+                <Input
+                  label="Phone"
+                  type="text"
+                  placeholder="Enter your Phone Number"
+                  onChange={(e) => setPhone(e.target.value)}
                 />
                 <Input
                   label="Password"

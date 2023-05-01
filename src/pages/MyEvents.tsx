@@ -5,16 +5,17 @@ import { Link } from "react-router-dom";
 import Card from "@/components/Card";
 import axios from "axios";
 import Swal from "@/utils/Swal";
+import { useCookies } from "react-cookie";
 
 interface datasType {
-  id: number;
-  name: string;
+  event_id: number;
+  title: string;
   hosted_by: string;
   date: string;
   time: string;
   status: string;
   location: string;
-  details: string;
+  description: string;
   event_picture: string;
 }
 
@@ -22,6 +23,9 @@ const MyEvents: FC = () => {
   const [page, setPage] = useState<string>("attending");
   const [datas, setDatas] = useState<datasType[]>([]);
   const MySwal = withReactContent(Swal);
+  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const getToken = cookie.token;
+  const [endPoint, setEndpoint] = useState<string>("attendances");
 
   useEffect(() => {
     fetchData();
@@ -29,14 +33,24 @@ const MyEvents: FC = () => {
 
   function handlePage(page: string) {
     setPage(page);
+    if (page == "attending") {
+      setEndpoint("attendances");
+    } else {
+      setEndpoint("events");
+    }
   }
 
   function fetchData() {
     axios
-      .get("events?page=1")
+      .get(`/users/${endPoint}`, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((response) => {
-        const { events, message } = response.data;
-        setDatas(events);
+        const { data, message } = response.data;
+        console.log(data);
+        setDatas(data);
       })
       .catch((er) => {
         const { message } = er.response.data;
@@ -149,43 +163,25 @@ const MyEvents: FC = () => {
           </div>
         </div>
         <div className=" flex-1">
-          {page == "attending" ? (
-            <div className=" flex flex-col transition-all">
-              {datas.map((data) => {
-                return (
-                  <Link to={`/detail-event/${data.id}`}>
-                    <Card
-                      id={data.id}
-                      name={data.name}
-                      hosted_by={data.hosted_by}
-                      date={data.date}
-                      time={data.time}
-                      status={data.status}
-                      location={data.location}
-                      details={data.details}
-                      event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
-                    />
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <div className=" flex flex-col transition-all">
-              <Link to={"/"}>
-                <Card
-                  id={0}
-                  name={"Noah Concert Music"}
-                  hosted_by={"NOAH"}
-                  time={"19.00 PM"}
-                  status={"opem"}
-                  date={"17 April 2023"}
-                  location={"Jakarta"}
-                  details={"Details"}
-                  event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
-                />{" "}
-              </Link>
-            </div>
-          )}
+          <div className=" flex flex-col transition-all">
+            {datas.map((data) => {
+              return (
+                <Link to={`/detail-event/${data.event_id}`}>
+                  <Card
+                    id={data.event_id}
+                    name={data.title}
+                    hosted_by={data.hosted_by}
+                    date={data.date}
+                    time={data.time}
+                    status={data.status}
+                    location={data.location}
+                    details={data.description}
+                    event_picture={data.event_picture}
+                  />
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </Layout>

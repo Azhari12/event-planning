@@ -3,7 +3,7 @@ import { FC, useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { InputForm } from "@/components/Input";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
 import Swal from "@/utils/Swal";
 
@@ -47,6 +47,7 @@ const UpdateEvent: FC = () => {
   });
   const [ticketDatas, setTicketDatas] = useState<ticketCategoriesType[]>([]);
   const [fetch, setFetch] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(fetch);
@@ -116,6 +117,10 @@ const UpdateEvent: FC = () => {
           title: "Success",
           text: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`/detail-event/${id}`);
+          }
         });
         console.log("event Succes Update");
       })
@@ -140,6 +145,10 @@ const UpdateEvent: FC = () => {
           title: "Success Ticket",
           text: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`/detail-event/${id}`);
+          }
         });
         console.log("Tickets Succes Update");
       })
