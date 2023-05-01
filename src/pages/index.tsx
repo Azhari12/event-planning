@@ -24,21 +24,21 @@ const Home: FC = () => {
   const MySwal = withReactContent(Swal);
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
   const getToken = cookie.token;
+  const [numberPage, setNumberPage] = useState<number>(1);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [numberPage]);
 
   function fetchData() {
     axios
-      .get("events?page=1", {
+      .get(`events?page=${numberPage}`, {
         headers: {
           Authorization: `Bearer ${getToken}`,
         },
       })
       .then((response) => {
         const { data, message } = response.data;
-        alert(data);
         console.log(data);
         setDatas(data);
       })
@@ -50,6 +50,13 @@ const Home: FC = () => {
           showCancelButton: false,
         });
       });
+  }
+
+  function handlePage(n: number) {
+    const temp = numberPage + n;
+    if (temp >= 1) {
+      setNumberPage(temp);
+    }
   }
 
   return (
@@ -97,6 +104,23 @@ const Home: FC = () => {
                 </Link>
               );
             })}
+          </div>
+          <div className="btn-group w-full justify-center items-center p-10 ">
+            <button
+              className="btn bg-white text-button border-none hover:bg-gradient-to-r"
+              onClick={(e) => handlePage(-1)}
+            >
+              «
+            </button>
+            <button className="btn bg-white text-button border-none hover:bg-gradient-to-r">
+              Page {numberPage}
+            </button>
+            <button
+              className="btn bg-white text-button border-none hover:bg-gradient-to-r"
+              onClick={(e) => handlePage(1)}
+            >
+              »
+            </button>
           </div>
         </div>
       </div>
