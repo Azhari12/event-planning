@@ -5,8 +5,10 @@ import { FC, useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Swal from "@/utils/Swal";
 import { useCookies } from "react-cookie";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PDFDocument from "@/components/PDFDocument";
 
-interface tikcetType {
+interface buyingTikcetType {
   default_price: number;
   price: number;
   name: string;
@@ -53,19 +55,58 @@ interface attendeesType {
   quantity: number;
 }
 
+interface reviewType {
+  review: string;
+}
+
+interface attendances {
+  username: string;
+  user_picture: string;
+}
+
+interface transactionsType {
+  invoice: string;
+  seller: string;
+  seller_email: string;
+  attendee: string;
+  attendee_email: string;
+  title: string;
+  event_date: string;
+  event_time: string;
+  purchase_startdate: string;
+  purchase_enddate: string;
+  status: string;
+  status_date: string;
+  items_description: [
+    {
+      ticket_category: string;
+      ticket_price: number;
+      ticket_quantity: number;
+      subtotal: number;
+    }
+  ];
+  grand_total: number;
+  payment_method: string;
+}
+
 const DetailEvent: FC = () => {
-  const [tiecketArray, setTicetArray] = useState<tikcetType[]>([]);
-  const [tikectselect, setTicketSelect] = useState<string>("");
-  const [total, setTotal] = useState<number>(0);
-  const { id } = useParams();
-  const [data, setData] = useState<detailType>();
+  const [tiecketArray, setTicetArray] = useState<buyingTikcetType[]>([]);
   const [ticketDatas, setTicketDatas] = useState<ticketType[]>([]);
-  const [attendees, setAttendees] = useState<attendeesType[]>([]);
-  const MySwal = withReactContent(Swal);
-  const [qtyAllticket, setQtyAllTicket] = useState<number>(0);
+  // const [attendees, setAttendees] = useState<attendeesType[]>([]);
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
-  const getToken = cookie.token;
+  const [tikectselect, setTicketSelect] = useState<string>("");
+  const [qtyAllticket, setQtyAllTicket] = useState<number>(0);
+  const [review, setReview] = useState<reviewType>();
+  const [data, setData] = useState<detailType>();
+  const [total, setTotal] = useState<number>(0);
+  const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  const getToken = cookie.token;
+  const { id } = useParams();
+  const [attending, setAttending] = useState<boolean>(false);
+  const [trasactionData, setTrasactionData] = useState<transactionsType>();
+
+  const username = "peterzalai";
 
   useEffect(() => {
     console.log(tikectselect);
@@ -73,9 +114,10 @@ const DetailEvent: FC = () => {
     console.log(qtyAllticket);
     fetchData();
     // addTicket(tikectselect);
-  }, [tiecketArray]);
+  }, []);
 
   function fetchData() {
+    let array: attendances[] = [];
     axios
       .get(`events/${id}`, {
         headers: {
@@ -84,6 +126,22 @@ const DetailEvent: FC = () => {
       })
       .then((res) => {
         const { data, message } = res.data;
+        array = data.attendances;
+        console.log(array);
+        let isAttending = array.some((item) => item.username === cookie.uname);
+        setAttending(isAttending);
+        if (isAttending) {
+          axios
+            .get(`transactions/${id}`, {
+              headers: {
+                Authorization: `Bearer ${getToken}`,
+              },
+            })
+            .then((res) => {
+              const { data } = res.data;
+              setTrasactionData(data);
+            });
+        }
         console.log(data);
         setData(data);
       })
@@ -221,19 +279,76 @@ const DetailEvent: FC = () => {
   }
 
   function handleDelete(id?: number) {
+    MySwal.fire({
+      title: "Delete",
+      text: "Are you sure delete this event?",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(`/events/${id}`)
+          .then((res) => {
+            const { message } = res.data;
+            MySwal.fire({
+              title: "Success Delete Event",
+              text: message,
+              showCancelButton: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                navigate("/");
+              }
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            MySwal.fire({
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            });
+          });
+
+        axios
+          .delete(`/tickets/${id}`)
+          .then((res) => {
+            const { message } = res.data;
+            MySwal.fire({
+              title: "Success Delete Event",
+              text: message,
+              showCancelButton: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                navigate("/");
+              }
+            });
+          })
+          .catch((error) => {
+            const { message } = error.response.data;
+            MySwal.fire({
+              title: "Failed",
+              text: message,
+              showCancelButton: false,
+            });
+          });
+      }
+    });
+  }
+
+  function handleComment() {
+    console.log(review);
     axios
-      .delete(`/events/${id}`)
+      .post(`reviews/${id}`, review, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
-          title: "Success Delete",
+          title: "Success",
           text: message,
           showCancelButton: false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/");
-          }
         });
+        console.log("sucess");
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -312,7 +427,49 @@ const DetailEvent: FC = () => {
             )}
           </div>
         </div>
-        {cookie.uname == "peterzalai" ? (
+
+        {/* condition, is atteding true or not, inside false of this condition is, a component for ticket area which have condition too */}
+        {attending ? (
+          <div className=" grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-2 rounded-lg m-4 p-5">
+            <div className="flex flex-col  font-semibold justify-center">
+              <p className=" text-base">
+                {trasactionData?.items_description.reduce(
+                  (totals, items_description) =>
+                    totals + items_description.ticket_quantity,
+                  0
+                )}{" "}
+                Tickets Buyed
+              </p>
+              {trasactionData?.items_description.map((data) => {
+                return (
+                  <div className=" flex items-center justify-between">
+                    <p className=" text-sm">
+                      {data.ticket_quantity + " " + data.ticket_category} Ticket
+                    </p>
+                    <p className="text-lg font-semibold">
+                      {" "}
+                      Rp. {data.subtotal}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <div className=" flex justify-center items-center">
+              <p className="text-lg font-semibold">Total</p>
+              <p className="text-lg font-semibold">
+                Rp. {trasactionData?.grand_total}
+              </p>
+            </div>
+            <div className=" flex justify-center items-center">
+              <label
+                htmlFor="my-modal-3"
+                className="btn ml-2 bg-button mt-10 text-md rounded-lg"
+              >
+                Detail Transaction
+              </label>
+            </div>
+          </div>
+        ) : cookie.uname == data?.hosted_by ? (
           <div className=" grid grid-cols-1 md:grid-cols-2 border-2 rounded-lg m-4 p-5">
             <div className=" flex flex-col">
               <div className=" rounded-lg border-2 mt-5 p-3">
@@ -455,66 +612,208 @@ const DetailEvent: FC = () => {
           </div>
         )}
 
-        <div className="m-4">
-          <p className=" text-lg font-bold ">Attendees</p>
-          <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-            {data?.attendances !== null
-              ? data?.attendances.map((data) => {
-                  return (
-                    <div className=" flex flex-col justify-center items-center p-10">
+        {attending ? (
+          ""
+        ) : (
+          <div>
+            <div className="m-4">
+              <p className=" text-lg font-bold ">Attendees</p>
+              <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
+                {data?.attendances !== null
+                  ? data?.attendances.map((data) => {
+                      return (
+                        <div className=" flex flex-col justify-center items-center p-10">
+                          <img
+                            src="/kirito.jpg"
+                            className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
+                          />
+                          <p>{data.username}</p>
+                        </div>
+                      );
+                    })
+                  : "tes"}
+              </div>
+            </div>
+            <div className="m-4">
+              <p className=" text-lg font-bold ">Comments</p>
+              <div className="lg:px-[2rem]">
+                {cookie.uname != data?.hosted_by ? (
+                  <div className="flex items-center mb-5">
+                    <div className=" flex-initial max-w-[10rem]">
                       <img
                         src="/kirito.jpg"
-                        className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
+                        className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
                       />
-                      <p>{data.username}</p>
                     </div>
-                  );
-                })
-              : "tes"}
-          </div>
-        </div>
-        <div className="m-4">
-          <p className=" text-lg font-bold ">Comments</p>
-          <div className="lg:px-[2rem]">
-            {cookie.uname != data?.hosted_by ? (
-              <div className="flex items-center mb-5">
-                <div className=" flex-initial max-w-[10rem]">
-                  <img
-                    src="/kirito.jpg"
-                    className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
-                  />
-                </div>
-                <div className="flex-1 bg-[#F7F8F9] flex p-5 items-center justify-between">
-                  <textarea
-                    placeholder="Enter a comment ..."
-                    className="textarea textarea-bordered textarea-md w-full max-w-2xl"
-                  ></textarea>
-                  <button className="btn ml-2 bg-button rounded-lg">
-                    comment
-                  </button>
-                </div>
+                    <div className="flex-1 bg-[#F7F8F9] flex p-5 items-center justify-between">
+                      <textarea
+                        placeholder="Enter a comment ..."
+                        className="textarea textarea-bordered textarea-md w-full max-w-2xl"
+                        onChange={(e) =>
+                          setReview({ ...review, review: e.target.value })
+                        }
+                      ></textarea>
+                      <button
+                        className="btn ml-2 bg-button rounded-lg"
+                        onClick={(e) => handleComment()}
+                      >
+                        comment
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                {data?.reviews
+                  ? data?.reviews.map((data) => {
+                      return (
+                        <div className="flex items-center">
+                          <div className=" flex-initial max-w-[10rem]">
+                            <img
+                              src="/kirito.jpg"
+                              className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
+                            />
+                          </div>
+                          <div className="bg-[#F7F8F9] flex p-5 flex-col">
+                            <p className=" text-lg font-bold">
+                              {data.username}
+                            </p>
+                            <p>{data.review}</p>
+                          </div>
+                        </div>
+                      );
+                    })
+                  : "tes"}
               </div>
-            ) : (
-              ""
-            )}
-            {data?.reviews
-              ? data?.reviews.map((data) => {
+            </div>
+          </div>
+        )}
+      </div>
+      {/* modal */}
+      <input type="checkbox" id="my-modal-3" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box relative">
+          <label
+            htmlFor="my-modal-3"
+            className="btn btn-sm btn-circle absolute right-2 top-2"
+          >
+            ✕
+          </label>
+          <div className=" flex flex-col text-xs text-[#667085]">
+            <h3 className="text-lg font-bold text-black">Detail Transaction</h3>
+            <div className=" flex justify-around">
+              <div className=" flex-col">
+                <p>TO:</p>
+                <p className=" text-base text-button font-semibold">
+                  {trasactionData?.seller}
+                </p>
+                <p>{trasactionData?.seller_email}</p>
+              </div>
+              <div className=" flex-col">
+                <p>FROM:</p>
+                <p className=" text-base text-button font-semibold">
+                  {trasactionData?.attendee}
+                </p>
+                <p>{trasactionData?.attendee_email}</p>
+              </div>
+            </div>
+            <p>INFO</p>
+            <p className=" text-base text-button font-semibold">
+              Amount: Rp. {trasactionData?.grand_total}
+            </p>
+            <div className="flex">
+              <div className="flex flex-col">
+                <p>Invoice</p>
+                <p>Event Date</p>
+                <p>Event Time</p>
+                <p>Status</p>
+                <p>Payment Method</p>
+              </div>
+              <div className="flex flex-col">
+                <p> : {trasactionData?.event_date}</p>
+                <p> : {trasactionData?.event_time}</p>
+                <p> : {trasactionData?.status}</p>
+                <p> : {trasactionData?.payment_method}</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <p>Subject : </p>
+              <p className=" text-base text-button font-semibold">
+                {trasactionData?.title}
+              </p>
+            </div>
+            <div className="flex justify-between border-b-2 border-black pb-3">
+              <div className="flex flex-col">
+                <p>ITEM DESCRIPTION</p>
+                {trasactionData?.items_description.map((data) => {
                   return (
-                    <div className="flex items-center">
-                      <div className=" flex-initial max-w-[10rem]">
-                        <img
-                          src="/kirito.jpg"
-                          className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
-                        />
-                      </div>
-                      <div className="bg-[#F7F8F9] flex p-5 flex-col">
-                        <p className=" text-lg font-bold">{data.username}</p>
-                        <p>{data.review}</p>
-                      </div>
-                    </div>
+                    <p className=" text-sm text-button font-semibold mt-3">
+                      {data.ticket_category} Ticket
+                    </p>
                   );
-                })
-              : "tes"}
+                })}
+              </div>
+              <div className="flex flex-col">
+                <p>QTY</p>
+                {trasactionData?.items_description.map((data) => {
+                  return (
+                    <p className=" text-sm text-button font-semibold mt-3">
+                      {data.ticket_quantity}
+                    </p>
+                  );
+                })}
+              </div>
+              <div className="flex flex-col">
+                <p>RATE</p>
+                {trasactionData?.items_description.map((data) => {
+                  return (
+                    <p className=" text-sm text-button font-semibold mt-3">
+                      {data.ticket_price}
+                    </p>
+                  );
+                })}
+              </div>
+              <div className="flex flex-col">
+                <p>AMOUNT</p>
+                {trasactionData?.items_description.map((data) => {
+                  return (
+                    <p className=" text-sm text-button font-semibold mt-3">
+                      {data.subtotal}
+                    </p>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex justify-between mt-3">
+              <p className="text-sm text-button font-semibold">Total</p>
+              <p className=" text-sm text-button font-semibold">
+                Rp. {trasactionData?.grand_total}
+              </p>
+            </div>
+            <div className="flex justify-center">
+              <PDFDownloadLink
+                className="btn ml-2 bg-button mt-10 text-md rounded-lg"
+                document={
+                  <PDFDocument
+                    title={trasactionData?.title}
+                    to={trasactionData?.seller}
+                    from={trasactionData?.attendee}
+                    amount={trasactionData?.grand_total}
+                    invoice={trasactionData?.invoice}
+                    event_date={trasactionData?.event_date}
+                    event_time={trasactionData?.event_time}
+                    status={trasactionData?.status}
+                    payment_method={trasactionData?.payment_method}
+                    grand_total={trasactionData?.grand_total}
+                  />
+                }
+                fileName="document.pdf"
+              >
+                {({ blob, url, loading, error }) =>
+                  loading ? "Loading document..." : "Print PDF!"
+                }
+              </PDFDownloadLink>
+            </div>
           </div>
         </div>
       </div>
