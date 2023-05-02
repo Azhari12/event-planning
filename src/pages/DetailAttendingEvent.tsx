@@ -1,5 +1,18 @@
 import { FC } from "react";
 import Layout from "@/components/Layout";
+import React from "react";
+import {
+  PDFDownloadLink,
+  PDFViewer,
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+} from "@react-pdf/renderer";
+
+import PDFDocument from "@/components/PDFDocument";
+
 const DetailAttendingEvent: FC = () => {
   return (
     <Layout>
