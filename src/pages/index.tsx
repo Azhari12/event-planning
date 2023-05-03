@@ -25,22 +25,32 @@ const Home: FC = () => {
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
   const getToken = cookie.token;
   const [numberPage, setNumberPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(1);
+  const [cateogry, setCategory] = useState<string>("");
 
   useEffect(() => {
     fetchData();
-  }, [numberPage]);
+  }, [numberPage, cateogry]);
 
   function fetchData() {
-    axios
-      .get(`events?page=${numberPage}`, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .get(`events?page=${numberPage}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "get",
+      url: `https://peterzalai.biz.id/events?page=${numberPage}&category=${cateogry}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((response) => {
-        const { data, message } = response.data;
+        const { data, message, total_pages } = response.data;
         console.log(data);
         setDatas(data);
+        setTotalPage(total_pages);
       })
       .catch((er) => {
         const { message } = er.response.data;
@@ -54,7 +64,7 @@ const Home: FC = () => {
 
   function handlePage(n: number) {
     const temp = numberPage + n;
-    if (temp >= 1) {
+    if (temp >= 1 && totalPage > temp) {
       setNumberPage(temp);
     }
   }
@@ -66,22 +76,67 @@ const Home: FC = () => {
           <div>
             <p className=" font-semibold">Event Categories</p>
             <div className="grid lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-4 min-[400px]: grid-cols-2">
-              <label className="label cursor-pointer justify-start">
-                <input type="checkbox" className="checkbox w-4 h-4 mx-8" />
-                <span className="label-text">Music</span>
-              </label>
-              <label className="label cursor-pointer justify-start">
-                <input type="checkbox" className="checkbox w-4 h-4 mx-8" />
-                <span className="label-text">Art</span>
-              </label>
-              <label className="label cursor-pointer justify-start">
-                <input type="checkbox" className="checkbox w-4 h-4 mx-8" />
-                <span className="label-text">Games</span>
-              </label>
-              <label className="label cursor-pointer justify-start">
-                <input type="checkbox" className="checkbox w-4 h-4 mx-8" />
-                <span className="label-text">Sport</span>
-              </label>
+              {cateogry == "Music" ? (
+                <button
+                  className=" bg-[#A3C7FF] p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Music")}
+                >
+                  Music
+                </button>
+              ) : (
+                <button
+                  className="p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Music")}
+                >
+                  Music
+                </button>
+              )}
+
+              {cateogry == "Art" ? (
+                <button
+                  className=" bg-[#A3C7FF] p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Art")}
+                >
+                  Art
+                </button>
+              ) : (
+                <button
+                  className="p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Art")}
+                >
+                  Art
+                </button>
+              )}
+              {cateogry == "Games" ? (
+                <button
+                  className=" bg-[#A3C7FF] p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Games")}
+                >
+                  Games
+                </button>
+              ) : (
+                <button
+                  className="p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Games")}
+                >
+                  Games
+                </button>
+              )}
+              {cateogry == "Sport" ? (
+                <button
+                  className=" bg-[#A3C7FF] p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Sport")}
+                >
+                  Sport
+                </button>
+              ) : (
+                <button
+                  className="p-3 w-full text-start flex transition-all"
+                  onClick={(e) => setCategory("Sport")}
+                >
+                  Sport
+                </button>
+              )}
             </div>
           </div>
         </div>

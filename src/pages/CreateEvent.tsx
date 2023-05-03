@@ -93,12 +93,20 @@ const CreateEvent: FC = () => {
 
   function handleSubmit() {
     console.log(getToken);
-    axios
-      .post("events", objSubmit, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .post("events", objSubmit, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "post",
+      url: `https://peterzalai.biz.id/events`,
+      data: objSubmit,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((res) => {
         const { message, data } = res.data;
         MySwal.fire({
