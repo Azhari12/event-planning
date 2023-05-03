@@ -47,7 +47,8 @@ const CreateEvent: FC = () => {
     status: "",
     category: "",
     location: "",
-    event_picture: "default_image_gcp.png",
+    event_picture:
+      "https://www.lalamove.com/hubfs/event%20organizer%20%283%29.jpg",
     tickets: [
       {
         ticket_category: "",

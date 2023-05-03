@@ -64,7 +64,7 @@ const Home: FC = () => {
 
   function handlePage(n: number) {
     const temp = numberPage + n;
-    if (temp >= 1 && totalPage > temp) {
+    if (temp >= 1) {
       setNumberPage(temp);
     }
   }
@@ -154,7 +154,7 @@ const Home: FC = () => {
                     status={data.status}
                     location={data.location}
                     details={data.description}
-                    event_picture="https://asset.kompas.com/crops/R9w_RwfaUKKKYumZwqo_1qQSEEo=/0x0:0x0/750x500/data/photo/2022/06/29/62bc2a26e66c5.jpg"
+                    event_picture={data.event_picture}
                   />
                 </Link>
               );

@@ -15,7 +15,11 @@ const Auth: FC = () => {
   const [password, setPassword] = useState<string>("");
   const [phone, setPhone] = useState<string>("");
   const [image, setImage] = useState<string>("https://peterzalai.jpg");
-  const [cookie, setCookie] = useCookies(["token", "uname"]);
+  const [cookie, setCookie, removeCookie] = useCookies([
+    "token",
+    "uname",
+    "image",
+  ]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -70,6 +74,7 @@ const Auth: FC = () => {
       email,
       password,
     };
+    removeCookie("image");
 
     // axios
     //   .post("login", body)
@@ -100,6 +105,7 @@ const Auth: FC = () => {
           }).then((res) => {
             const { data } = res.data;
             setCookie("uname", data.username);
+            setCookie("image", data.image);
           });
           if (result.isConfirmed) {
             setCookie("token", data.token);

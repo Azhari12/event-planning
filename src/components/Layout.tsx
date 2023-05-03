@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Layout: FC<Props> = (props) => {
-  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const [cookie, , removeCookie] = useCookies(["token", "uname", "image"]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -89,7 +89,7 @@ const Layout: FC<Props> = (props) => {
                         className="btn btn-ghost btn-circle avatar"
                       >
                         <div className="w-10 rounded-full">
-                          <img src="/kirito.jpg" />
+                          <img src={cookie.image} />
                         </div>
                       </label>
                       <ul
@@ -100,7 +100,9 @@ const Layout: FC<Props> = (props) => {
                           <p>{cookie.uname}</p>
                         </li>
                         <li>
-                          <a className="justify-between">Profile</a>
+                          <Link to={"/my-profile"} className="justify-between">
+                            Profile
+                          </Link>
                         </li>
 
                         <li>
@@ -142,13 +144,19 @@ const Layout: FC<Props> = (props) => {
                 </Link>
               </li>
               <li>
-                <a className=" p-5">Profile</a>
+                <Link to={"/my-profile"} className=" p-5">
+                  Profile
+                </Link>
               </li>
               <li>
-                <a className=" p-5">Home</a>
+                <Link to={"/"} className=" p-5">
+                  Home
+                </Link>
               </li>
               <li>
-                <a className=" p-5">My Events</a>
+                <Link to={"my-events"} className=" p-5">
+                  My Events
+                </Link>
               </li>
               <li>
                 <button className="p-5" onClick={handleLogout}>
@@ -167,10 +175,14 @@ const Layout: FC<Props> = (props) => {
                 </Link>
               </li>
               <li>
-                <a className=" p-5">Home</a>
+                <Link to={"/"} className=" p-5">
+                  Home
+                </Link>
               </li>
               <li>
-                <a className=" p-5">My Events</a>
+                <Link to={"my-events"} className=" p-5">
+                  My Events
+                </Link>
               </li>
             </ul>
           )}

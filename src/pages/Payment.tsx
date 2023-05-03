@@ -40,7 +40,7 @@ const Payment: FC = () => {
   function handlePay() {
     const data = {
       event_id: localData?.event_id,
-      items_description: localData?.items_description,
+      item_description: localData?.items_description,
       grandtotal: localData?.grandtotal,
       payment_method: "Virtual Account BNI",
     };

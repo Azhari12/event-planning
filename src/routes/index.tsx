@@ -19,6 +19,7 @@ import DetailAttendingEvent from "@/pages/DetailAttendingEvent";
 import DetailHostingEvent from "@/pages/DetailHostingEvent";
 import UpdateEvent from "@/pages/UpdateEvent";
 import Payment from "@/pages/Payment";
+import MyProfile from "@/pages/MyProfile";
 
 axios.defaults.baseURL =
   "https://virtserver.swaggerhub.com/dimasyudhana/EventappRESTfulAPI/1.0.1";
@@ -68,6 +69,10 @@ const Router: FC = () => {
     {
       path: "/payment/:id",
       element: getToken ? <Payment /> : <Navigate to="/auth" />,
+    },
+    {
+      path: "/my-profile",
+      element: getToken ? <MyProfile /> : <Navigate to="/auth" />,
     },
   ]);
 
