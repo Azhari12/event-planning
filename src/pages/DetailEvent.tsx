@@ -9,10 +9,11 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import PDFDocument from "@/components/PDFDocument";
 
 interface buyingTikcetType {
-  default_price: number;
-  price: number;
-  name: string;
-  qty: number;
+  ticket_id: number;
+  ticket_category: string;
+  ticket_price: number;
+  ticket_quantity: number;
+  subtotal: number;
 }
 
 interface detailType {
@@ -42,6 +43,7 @@ interface detailType {
 }
 
 interface ticketType {
+  ticket_id: number;
   ticket_category: string;
   ticket_price: number;
   ticket_quantity: number;
@@ -117,6 +119,7 @@ const DetailEvent: FC = () => {
   }, []);
 
   function fetchData() {
+    localStorage.removeItem("ticket_data");
     let array: attendances[] = [];
     axios
       .get(`events/${id}`, {
@@ -126,6 +129,8 @@ const DetailEvent: FC = () => {
       })
       .then((res) => {
         const { data, message } = res.data;
+        console.log(data);
+        setData(data);
         array = data.attendances;
         console.log(array);
         let isAttending = array.some((item) => item.username === cookie.uname);
@@ -142,8 +147,6 @@ const DetailEvent: FC = () => {
               setTrasactionData(data);
             });
         }
-        console.log(data);
-        setData(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -206,29 +209,41 @@ const DetailEvent: FC = () => {
     console.log(categories);
 
     const tempTikcet = [...tiecketArray];
-    const vip = {
-      default_price: 350000,
-      price: 350000,
-      name: "V.I.P.",
-      qty: 1,
+    let dataTicket = {
+      ticket_id: 0,
+      ticket_category: "",
+      ticket_price: 0,
+      ticket_quantity: 1,
+      subtotal: 0,
     };
 
-    const reguler = {
-      default_price: 100000,
-      price: 100000,
-      name: "Reguler",
-      qty: 1,
-    };
+    ticketDatas.map((data) => {
+      if (categories == data.ticket_category) {
+        dataTicket.ticket_id = data.ticket_id;
+        dataTicket.ticket_price = data.ticket_price;
+        dataTicket.ticket_category = data.ticket_category;
+        dataTicket.subtotal = data.ticket_price;
+      }
+    });
 
-    if (categories == "VIP") {
-      tempTikcet.push(vip);
-      setTotal(total + vip.price);
-    } else {
-      tempTikcet.push(reguler);
-      setTotal(total + reguler.price);
-    }
+    // const reguler = {
+    //   default_price: 100000,
+    //   price: 100000,
+    //   name: "Reguler",
+    //   qty: 1,
+    // };
 
-    const totalPrice = total;
+    // if (categories == "VIP") {
+    //   tempTikcet.push(vip);
+    //   setTotal(total + vip.price);
+    // } else {
+    //   tempTikcet.push(reguler);
+    //   setTotal(total + reguler.price);
+    // }
+    tempTikcet.push(dataTicket);
+    setTotal(total + dataTicket.subtotal);
+
+    // const totalPrice = total;
     setTicetArray(tempTikcet);
   }
 
@@ -241,14 +256,15 @@ const DetailEvent: FC = () => {
     qty: number,
     default_price: number
   ) {
+    console.log(tiecketArray);
     qty++;
     const ticketData = {
-      price: default_price * qty,
-      qty: qty,
+      subtotal: default_price * qty,
+      ticket_quantity: qty,
     };
     setTicetArray(
       tiecketArray.map((data) => {
-        if (data.name === ticketName) {
+        if (data.ticket_category === ticketName) {
           return { ...data, ...ticketData };
         }
         return data;
@@ -262,20 +278,22 @@ const DetailEvent: FC = () => {
     qty: number,
     default_price: number
   ) {
-    qty--;
-    const ticketData = {
-      price: default_price * qty,
-      qty: qty,
-    };
-    setTicetArray(
-      tiecketArray.map((data) => {
-        if (data.name === ticketName) {
-          return { ...data, ...ticketData };
-        }
-        return data;
-      })
-    );
-    setTotal(total - default_price);
+    if (qty > 1) {
+      qty--;
+      const ticketData = {
+        subtotal: default_price * qty,
+        ticket_quantity: qty,
+      };
+      setTicetArray(
+        tiecketArray.map((data) => {
+          if (data.ticket_category === ticketName) {
+            return { ...data, ...ticketData };
+          }
+          return data;
+        })
+      );
+      setTotal(total - default_price);
+    }
   }
 
   function handleDelete(id?: number) {
@@ -358,6 +376,19 @@ const DetailEvent: FC = () => {
           showCancelButton: false,
         });
       });
+  }
+
+  function handleJoin() {
+    let localData = {
+      event_id: parseInt(id ?? "0"),
+      items_description: tiecketArray,
+      grandtotal: total,
+      title_event: data?.title,
+      title_image: data?.event_picture,
+      payment_method: "",
+    };
+    localStorage.setItem("ticket_data", JSON.stringify(localData));
+    navigate(`/payment/${id}`);
   }
 
   return (
@@ -523,8 +554,6 @@ const DetailEvent: FC = () => {
                         </option>
                       );
                     })}
-
-                    {/* <option value={"reguler"}>Reguler</option> */}
                   </select>
                   <button
                     className="btn ml-2 bg-button rounded-lg"
@@ -540,21 +569,23 @@ const DetailEvent: FC = () => {
                     <div className=" flex justify-around">
                       <div className=" font-medium w-[30%]">
                         <p>
-                          Rp. {data.default_price}
+                          Rp. {data.ticket_price}
                           <span className=" text-xs ">/ticket</span>
                         </p>
-                        <p className=" font-semibold">{data.name}</p>
+                        <p className=" font-semibold">{data.ticket_category}</p>
                       </div>
                       <div className="2-[20%] flex">
-                        <p className=" self-center">{data.qty} Ticket</p>
+                        <p className=" self-center">
+                          {data.ticket_quantity} Ticket
+                        </p>
                       </div>
                       <div className=" flex justify-around w-[20%]">
                         <button
                           onClick={() =>
                             handleUpdateMinus(
-                              data.name,
-                              data.qty,
-                              data.default_price
+                              data.ticket_category,
+                              data.ticket_quantity,
+                              data.ticket_price
                             )
                           }
                         >
@@ -571,13 +602,13 @@ const DetailEvent: FC = () => {
                             />
                           </svg>
                         </button>
-                        <p className=" self-center">{data.qty}</p>
+                        <p className=" self-center">{data.ticket_quantity}</p>
                         <button
                           onClick={() =>
                             handleUpdatePlus(
-                              data.name,
-                              data.qty,
-                              data.default_price
+                              data.ticket_category,
+                              data.ticket_quantity,
+                              data.ticket_price
                             )
                           }
                         >
@@ -604,7 +635,10 @@ const DetailEvent: FC = () => {
               <p>Total</p>
               <p className="mt-3 text-xl">Rp. {total}</p>
               <div>
-                <button className="btn ml-2 bg-button mt-10 text-lg rounded-lg">
+                <button
+                  className="btn ml-2 bg-button mt-10 text-lg rounded-lg"
+                  onClick={(e) => handleJoin()}
+                >
                   Join Now
                 </button>
               </div>
