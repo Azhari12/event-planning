@@ -40,8 +40,12 @@ const Auth: FC = () => {
       image,
     };
 
-    axios
-      .post("register", body)
+    // .post("register", body)
+    axios({
+      method: "post",
+      url: "https://peterzalai.biz.id/register",
+      data: body,
+    })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
@@ -67,8 +71,13 @@ const Auth: FC = () => {
       password,
     };
 
-    axios
-      .post("login", body)
+    // axios
+    //   .post("login", body)
+    axios({
+      method: "post",
+      url: "https://peterzalai.biz.id/login",
+      data: body,
+    })
       .then((res) => {
         const { message, data } = res.data;
         MySwal.fire({
@@ -76,16 +85,22 @@ const Auth: FC = () => {
           text: message,
           showCancelButton: false,
         }).then((result) => {
-          axios
-            .get("users", {
-              headers: {
-                Authorization: `Bearer ${data.token}`,
-              },
-            })
-            .then((res) => {
-              const { data } = res.data;
-              setCookie("uname", data.username);
-            });
+          // axios
+          //   .get("users", {
+          //     headers: {
+          //       Authorization: `Bearer ${data.token}`,
+          //     },
+          //   })
+          axios({
+            method: "get",
+            url: "https://peterzalai.biz.id/users",
+            headers: {
+              Authorization: `Bearer ${data.token}`,
+            },
+          }).then((res) => {
+            const { data } = res.data;
+            setCookie("uname", data.username);
+          });
           if (result.isConfirmed) {
             setCookie("token", data.token);
             dispatch(handleAuth(true));

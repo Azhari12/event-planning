@@ -59,12 +59,19 @@ const UpdateEvent: FC = () => {
   function fetchData() {
     if (!fetch) {
       console.log("2fetch");
-      axios
-        .get(`events/${id}`, {
-          headers: {
-            Authorization: `Bearer ${getToken}`,
-          },
-        })
+      // axios
+      //   .get(`events/${id}`, {
+      //     headers: {
+      //       Authorization: `Bearer ${getToken}`,
+      //     },
+      //   })
+      axios({
+        method: "get",
+        url: `https://peterzalai.biz.id/events/${id}`,
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
         .then((res) => {
           const { data, message } = res.data;
           console.log(data);
@@ -79,12 +86,19 @@ const UpdateEvent: FC = () => {
           });
         });
 
-      axios
-        .get(`tickets/${id}`, {
-          headers: {
-            Authorization: `Bearer ${getToken}`,
-          },
-        })
+      axios;
+      // .get(`tickets/${id}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${getToken}`,
+      //   },
+      // })
+      axios({
+        method: "get",
+        url: `https://peterzalai.biz.id/tickets/${id}`,
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
         .then((res) => {
           const { data, message } = res.data;
           console.log(data);

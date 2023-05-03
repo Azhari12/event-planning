@@ -121,12 +121,19 @@ const DetailEvent: FC = () => {
   function fetchData() {
     localStorage.removeItem("ticket_data");
     let array: attendances[] = [];
-    axios
-      .get(`events/${id}`, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .get(`events/${id}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "get",
+      url: `https://peterzalai.biz.id/events/${id}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((res) => {
         const { data, message } = res.data;
         console.log(data);
@@ -157,33 +164,20 @@ const DetailEvent: FC = () => {
         });
       });
 
-    // get attendess data by event id
+    //get ticket datas by event id
     // axios
-    //   .get(`events/${id}/attendees`, {
+    //   .get(`tickets/${id}`, {
     //     headers: {
     //       Authorization: `Bearer ${getToken}`,
     //     },
     //   })
-    //   .then((res) => {
-    //     const { data, message } = res.data;
-    //     setAttendees(data);
-    //   })
-    //   .catch((error) => {
-    //     const { message } = error.response.data;
-    //     MySwal.fire({
-    //       title: "Failed",
-    //       text: message,
-    //       showCancelButton: false,
-    //     });
-    //   });
-
-    //get ticket datas by event id
-    axios
-      .get(`tickets/${id}`, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    axios({
+      method: "get",
+      url: `https://peterzalai.biz.id/tickets/${id}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((res) => {
         const { data, message } = res.data;
         setTicketDatas(data);
@@ -302,8 +296,15 @@ const DetailEvent: FC = () => {
       text: "Are you sure delete this event?",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios
-          .delete(`/events/${id}`)
+        // axios
+        //   .delete(`/events/${id}`)
+        axios({
+          method: "delete",
+          url: `https://peterzalai.biz.id/events/${id}`,
+          headers: {
+            Authorization: `Bearer ${getToken}`,
+          },
+        })
           .then((res) => {
             const { message } = res.data;
             MySwal.fire({
@@ -315,6 +316,7 @@ const DetailEvent: FC = () => {
                 navigate("/");
               }
             });
+            console.log("success Delete Event");
           })
           .catch((error) => {
             const { message } = error.response.data;
@@ -325,8 +327,15 @@ const DetailEvent: FC = () => {
             });
           });
 
-        axios
-          .delete(`/tickets/${id}`)
+        // axios
+        // .delete(`/tickets/${id}`)
+        axios({
+          method: "delete",
+          url: `https://peterzalai.biz.id/tickets/${id}`,
+          headers: {
+            Authorization: `Bearer ${getToken}`,
+          },
+        })
           .then((res) => {
             const { message } = res.data;
             MySwal.fire({
@@ -338,6 +347,7 @@ const DetailEvent: FC = () => {
                 navigate("/");
               }
             });
+            console.log("success Delete Ticket");
           })
           .catch((error) => {
             const { message } = error.response.data;
@@ -353,12 +363,19 @@ const DetailEvent: FC = () => {
 
   function handleComment() {
     console.log(review);
-    axios
-      .post(`reviews/${id}`, review, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .post(`reviews/${id}`, review, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "post",
+      url: `https://peterzalai.biz.id/reviews/${id}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
@@ -403,13 +420,23 @@ const DetailEvent: FC = () => {
             <h1 className="text-5xl font-bold capitalize">{data?.title}</h1>
             <p className="py-6 text-[#4B5262]">{data?.description}</p>
             <div className=" flex justify-around text-lg font-bold">
-              <div className=" w-48">
-                <p>{data?.attendances.length} Joined</p>
-                <p className="text-[#4B5262] text-sm font-normal">
-                  {data?.attendances.length} People were joined this event, we
-                  still waiting
-                </p>
-              </div>
+              {data?.attendances !== undefined ? (
+                <div className=" w-48">
+                  <p>{data?.attendances.length} Joined</p>
+                  <p className="text-[#4B5262] text-sm font-normal">
+                    {data?.attendances.length} People were joined this event, we
+                    still waiting
+                  </p>
+                </div>
+              ) : (
+                <div className=" w-48">
+                  <p>0 Joined</p>
+                  <p className="text-[#4B5262] text-sm font-normal">
+                    0 People were joined this event, we still waiting
+                  </p>
+                </div>
+              )}
+
               <div>
                 <p>
                   {ticketDatas.reduce(
@@ -653,7 +680,7 @@ const DetailEvent: FC = () => {
             <div className="m-4">
               <p className=" text-lg font-bold ">Attendees</p>
               <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-                {data?.attendances !== null
+                {data?.attendances !== undefined
                   ? data?.attendances.map((data) => {
                       return (
                         <div className=" flex flex-col justify-center items-center p-10">
@@ -665,7 +692,7 @@ const DetailEvent: FC = () => {
                         </div>
                       );
                     })
-                  : "tes"}
+                  : "No Data"}
               </div>
             </div>
             <div className="m-4">
@@ -717,7 +744,7 @@ const DetailEvent: FC = () => {
                         </div>
                       );
                     })
-                  : "tes"}
+                  : "No Data"}
               </div>
             </div>
           </div>

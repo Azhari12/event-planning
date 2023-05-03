@@ -41,12 +41,19 @@ const MyEvents: FC = () => {
   }
 
   function fetchData() {
-    axios
-      .get(`/users/${endPoint}`, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .get(`/users/${endPoint}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "get",
+      url: `https://peterzalai.biz.id/users/${endPoint}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((response) => {
         const { data, message } = response.data;
         console.log(data);

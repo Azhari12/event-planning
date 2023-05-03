@@ -46,12 +46,20 @@ const Payment: FC = () => {
     };
     console.log(data);
 
-    axios
-      .post("transactions", data, {
-        headers: {
-          Authorization: `Bearer ${getToken}`,
-        },
-      })
+    // axios
+    //   .post("transactions", data, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "post",
+      url: `https://peterzalai.biz.id/transactions`,
+      data: data,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
       .then((res) => {
         const { message } = res.data;
         MySwal.fire({
