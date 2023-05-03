@@ -32,7 +32,11 @@ const Card: FC<Props> = (props) => {
         <div className="flex min-[400px]:flex-col sm:flex-col lg:flex-row justify-between max-w-full relative">
           <p className="card-title truncate font-bold capitalize flex min-[400px]:flex-col lg:flex-row">
             {name}
-            <div className="badge badge-success gap-2">{status}</div>
+            {status == "close" ? (
+              <div className="badge badge-error gap-2">{status}</div>
+            ) : (
+              <div className="badge badge-success gap-2">{status}</div>
+            )}
           </p>
           <p className="font-semibold text-sm lg:text-end">
             {date} | {time}

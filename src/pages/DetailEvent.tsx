@@ -95,7 +95,7 @@ const DetailEvent: FC = () => {
   const [tiecketArray, setTicetArray] = useState<buyingTikcetType[]>([]);
   const [ticketDatas, setTicketDatas] = useState<ticketType[]>([]);
   // const [attendees, setAttendees] = useState<attendeesType[]>([]);
-  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const [cookie, , removeCookie] = useCookies(["token", "uname", "image"]);
   const [tikectselect, setTicketSelect] = useState<string>("");
   const [qtyAllticket, setQtyAllTicket] = useState<number>(0);
   const [review, setReview] = useState<reviewType>();
@@ -107,6 +107,7 @@ const DetailEvent: FC = () => {
   const { id } = useParams();
   const [attending, setAttending] = useState<boolean>(false);
   const [trasactionData, setTrasactionData] = useState<transactionsType>();
+  const [join, setJoin] = useState<boolean>(false);
 
   const username = "peterzalai";
 
@@ -201,7 +202,7 @@ const DetailEvent: FC = () => {
 
   function addTicket(categories: string) {
     console.log(categories);
-
+    setJoin(true);
     const tempTikcet = [...tiecketArray];
     let dataTicket = {
       ticket_id: 0,
@@ -307,15 +308,7 @@ const DetailEvent: FC = () => {
         })
           .then((res) => {
             const { message } = res.data;
-            MySwal.fire({
-              title: "Success Delete Event",
-              text: message,
-              showCancelButton: false,
-            }).then((result) => {
-              if (result.isConfirmed) {
-                navigate("/");
-              }
-            });
+            deleteTicket(id);
             console.log("success Delete Event");
           })
           .catch((error) => {
@@ -326,12 +319,12 @@ const DetailEvent: FC = () => {
               showCancelButton: false,
             });
           });
+      }
 
-        // axios
-        // .delete(`/tickets/${id}`)
+      function deleteTicket(id_Event?: number) {
         axios({
           method: "delete",
-          url: `https://peterzalai.biz.id/tickets/${id}`,
+          url: `https://peterzalai.biz.id/tickets/${id_Event}`,
           headers: {
             Authorization: `Bearer ${getToken}`,
           },
@@ -372,6 +365,7 @@ const DetailEvent: FC = () => {
     axios({
       method: "post",
       url: `https://peterzalai.biz.id/reviews/${id}`,
+      data: review,
       headers: {
         Authorization: `Bearer ${getToken}`,
       },
@@ -392,7 +386,8 @@ const DetailEvent: FC = () => {
           text: message,
           showCancelButton: false,
         });
-      });
+      })
+      .finally(() => fetchData());
   }
 
   function handleJoin() {
@@ -464,23 +459,42 @@ const DetailEvent: FC = () => {
                   </p>
                 </div>
                 <div className="flex flex-col justify-center items-center">
-                  <p className=" text-lg font-bold text-red-800">Closed</p>
+                  <p className=" text-lg font-bold text-red-800">
+                    {data?.status}
+                  </p>
                   <button className="btn ml-2 bg-button mt-10 text rounded-lg">
                     Open
                   </button>
                 </div>
               </div>
             ) : (
-              <div className=" flex flex-col border-2 rounded-lg p-5 mt-5">
-                <p className=" font-bold tex-md">Time</p>
-                <p>
-                  {data?.date} | {data?.time}
-                </p>
-                <p className=" font-bold tex-md">Location</p>
-                <p>{data?.location}</p>
-                <p className=" font-bold tex-md mt-10">
-                  Hosted by {data?.hosted_by}
-                </p>
+              <div className=" flex border-2 rounded-lg p-5 mt-5 justify-around">
+                <div>
+                  <p className=" font-bold tex-md">Time</p>
+                  <p>
+                    {data?.date} | {data?.time}
+                  </p>
+                  <p className=" font-bold tex-md">Location</p>
+                  <p>{data?.location}</p>
+                  <p className=" font-bold tex-md mt-10">
+                    Hosted by {data?.hosted_by}
+                  </p>
+                </div>
+                <div className="flex flex-col items-center w-1/2">
+                  {data?.status == "close" ? (
+                    <p className=" text-lg">
+                      Event is{" "}
+                      <label className="font-bold text-red-800">
+                        {data?.status}
+                      </label>
+                      .You Can Not join this event.
+                    </p>
+                  ) : (
+                    <p className=" text-lg font-bold text-green-500">
+                      {data?.status}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -662,12 +676,22 @@ const DetailEvent: FC = () => {
               <p>Total</p>
               <p className="mt-3 text-xl">Rp. {total}</p>
               <div>
-                <button
-                  className="btn ml-2 bg-button mt-10 text-lg rounded-lg"
-                  onClick={(e) => handleJoin()}
-                >
-                  Join Now
-                </button>
+                {join && data?.status !== "close" ? (
+                  <button
+                    className="btn ml-2 bg-button mt-10 text-lg rounded-lg"
+                    onClick={(e) => handleJoin()}
+                  >
+                    Join Now
+                  </button>
+                ) : (
+                  <button
+                    disabled
+                    className="btn ml-2 bg-button mt-10 text-lg rounded-lg"
+                    onClick={(e) => handleJoin()}
+                  >
+                    Join Now
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -700,9 +724,9 @@ const DetailEvent: FC = () => {
               <div className="lg:px-[2rem]">
                 {cookie.uname != data?.hosted_by ? (
                   <div className="flex items-center mb-5">
-                    <div className=" flex-initial max-w-[10rem]">
+                    <div className=" flex-initial max-w-[5rem]">
                       <img
-                        src="/kirito.jpg"
+                        src={cookie.image}
                         className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
                       />
                     </div>
@@ -729,10 +753,10 @@ const DetailEvent: FC = () => {
                   ? data?.reviews.map((data) => {
                       return (
                         <div className="flex items-center">
-                          <div className=" flex-initial max-w-[10rem]">
+                          <div className=" flex-initial w-[5rem] h-20">
                             <img
-                              src="/kirito.jpg"
-                              className="lg:block md:block sm:hidden min-[400px]:hidden w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-cover"
+                              src={data.user_picture}
+                              className="lg:block md:block sm:hidden min-[400px]:hidden max-w-[100%] max-h-[100%] mask mask-circle shadow-2xl object-fill"
                             />
                           </div>
                           <div className="bg-[#F7F8F9] flex p-5 flex-col">
