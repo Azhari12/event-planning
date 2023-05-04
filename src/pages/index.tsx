@@ -47,10 +47,10 @@ const Home: FC = () => {
       },
     })
       .then((response) => {
-        const { data, message, total_pages } = response.data;
+        const { data, message, pagination } = response.data;
         console.log(data);
         setDatas(data);
-        setTotalPage(total_pages);
+        setTotalPage(pagination.total_pages);
       })
       .catch((er) => {
         const { message } = er.response.data;
@@ -64,7 +64,7 @@ const Home: FC = () => {
 
   function handlePage(n: number) {
     const temp = numberPage + n;
-    if (temp >= 1) {
+    if (temp >= 1 && temp <= totalPage) {
       setNumberPage(temp);
     }
   }
