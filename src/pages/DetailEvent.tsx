@@ -308,29 +308,6 @@ const DetailEvent: FC = () => {
         })
           .then((res) => {
             const { message } = res.data;
-            deleteTicket(id);
-            console.log("success Delete Event");
-          })
-          .catch((error) => {
-            const { message } = error.response.data;
-            MySwal.fire({
-              title: "Failed",
-              text: message,
-              showCancelButton: false,
-            });
-          });
-      }
-
-      function deleteTicket(id_Event?: number) {
-        axios({
-          method: "delete",
-          url: `https://peterzalai.biz.id/tickets/${id_Event}`,
-          headers: {
-            Authorization: `Bearer ${getToken}`,
-          },
-        })
-          .then((res) => {
-            const { message } = res.data;
             MySwal.fire({
               title: "Success Delete Event",
               text: message,
@@ -340,7 +317,7 @@ const DetailEvent: FC = () => {
                 navigate("/");
               }
             });
-            console.log("success Delete Ticket");
+            console.log("success Delete Event");
           })
           .catch((error) => {
             const { message } = error.response.data;
@@ -408,7 +385,7 @@ const DetailEvent: FC = () => {
       <div className=" min-h-screen place-items-start lg:p-10">
         <div className="hero-content flex-col lg:flex-row">
           <img
-            src="/noah.jpg"
+            src={data?.event_picture}
             className=" w-full h-full max-w-md max-h-[28rem] rounded-lg shadow-2xl object-cover"
           />
           <div className=" lg:pl-14">
@@ -890,6 +867,8 @@ const DetailEvent: FC = () => {
                     status={trasactionData?.status}
                     payment_method={trasactionData?.payment_method}
                     grand_total={trasactionData?.grand_total}
+                    event_picture={data?.event_picture}
+                    item_description={trasactionData?.items_description}
                   />
                 }
                 fileName="document.pdf"

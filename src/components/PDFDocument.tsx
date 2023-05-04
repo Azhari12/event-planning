@@ -6,6 +6,7 @@ import {
   Font,
   Image,
   StyleSheet,
+  View,
 } from "@react-pdf/renderer";
 
 interface Props {
@@ -18,13 +19,14 @@ interface Props {
   event_time: string | undefined;
   status: string | undefined;
   payment_method: string | undefined;
-  //   item_description?: {
-  //     ticket_category: string;
-  //     ticket_price: number;
-  //     ticket_quantity: number;
-  //     sub_total: number;
-  //   }[];
+  item_description?: {
+    ticket_category?: string;
+    ticket_price?: number;
+    ticket_quantity?: number;
+    subtotal?: number;
+  }[];
   grand_total: number | undefined;
+  event_picture?: string;
 }
 
 const PDFDocument: FC<Props> = (props) => {
@@ -39,15 +41,80 @@ const PDFDocument: FC<Props> = (props) => {
     status,
     payment_method,
     grand_total,
+    item_description,
+    event_picture,
   } = props;
 
   return (
     <Document>
       <Page style={styles.body}>
-        <Text style={styles.header}>Detail Transaction</Text>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.header}>{to}</Text>
-        <Text style={styles.header}>{from}</Text>
+        <View style={{ padding: "10mm" }}>
+          <Text
+            style={{
+              fontFamily: "Oswald",
+              fontSize: "22pt",
+              marginBottom: "5mm",
+            }}
+          >
+            {title}
+          </Text>
+          <Text style={{ fontFamily: "Oswald", fontSize: "16pt" }}>
+            {`Invoice: ${invoice}`}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: "10mm",
+            }}
+          >
+            <Text style={{ fontFamily: "Oswald", fontSize: "14pt" }}>Item</Text>
+            <Text style={{ fontFamily: "Oswald", fontSize: "14pt" }}>
+              Quantity
+            </Text>
+            <Text style={{ fontFamily: "Oswald", fontSize: "14pt" }}>
+              Subtotal
+            </Text>
+          </View>
+          {item_description?.map((item) => (
+            <View
+              key={item.ticket_category}
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: "5mm",
+              }}
+            >
+              <Text style={{ fontFamily: "Oswald", fontSize: "12pt" }}>
+                {item.ticket_category}
+              </Text>
+              <Text style={{ fontFamily: "Oswald", fontSize: "12pt" }}>
+                {item.ticket_quantity}
+              </Text>
+              <Text style={{ fontFamily: "Oswald", fontSize: "12pt" }}>
+                {`Rp${item.subtotal}`}
+              </Text>
+            </View>
+          ))}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: "10mm",
+            }}
+          >
+            <Text style={{ fontFamily: "Oswald", fontSize: "14pt" }}>
+              Total
+            </Text>
+            <Text style={{ fontFamily: "Oswald", fontSize: "14pt" }}>
+              {`Rp${grand_total}`}
+            </Text>
+          </View>
+          {/* <Text style={styles.header}>Detail Transaction</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.header}>{to}</Text>
+          <Text style={styles.header}>{from}</Text> */}
+        </View>
       </Page>
     </Document>
   );
@@ -60,7 +127,7 @@ Font.register({
 
 const styles = StyleSheet.create({
   body: {
-    paddingTop: 35,
+    paddingTop: 0,
     paddingBottom: 65,
     paddingHorizontal: 35,
   },
