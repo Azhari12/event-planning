@@ -4,8 +4,8 @@ import Layout from "@/components/Layout";
 import { FC, useEffect, useState, FormEvent } from "react";
 import React from "react";
 import DatePicker from "react-datepicker";
-import { useCookies } from "react-cookie";
 import "react-datepicker/dist/react-datepicker.css";
+import { useCookies } from "react-cookie";
 import { id, te } from "date-fns/locale";
 import { format } from "date-fns";
 
@@ -246,8 +246,8 @@ const CreateEvent: FC = () => {
                   </option>
                   <option value={"music"}>Music</option>
                   <option value={"art"}>Art</option>
-                  <option value={"game"}>Game</option>
-                  <option value={"it"}>IT</option>
+                  <option value={"games"}>Game</option>
+                  <option value={"sports"}>IT</option>
                 </select>
               </div>
             </div>
