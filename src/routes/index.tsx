@@ -55,14 +55,6 @@ const Router: FC = () => {
       element: getToken ? <MyEvents /> : <Navigate to="/auth" />,
     },
     {
-      path: "/detail-attending-event",
-      element: getToken ? <DetailAttendingEvent /> : <Navigate to="/auth" />,
-    },
-    {
-      path: "/detail-hosting-event",
-      element: getToken ? <DetailHostingEvent /> : <Navigate to="/auth" />,
-    },
-    {
       path: "/update-event/:id",
       element: getToken ? <UpdateEvent /> : <Navigate to="/auth" />,
     },
@@ -79,8 +71,8 @@ const Router: FC = () => {
   useEffect(() => {
     // removeCookie("tkn");
     // removeCookie("uname");
-    console.log(getToken);
-    console.log(cookie);
+    // console.log(getToken);
+    // console.log(cookie);
     if (getToken) {
       dispatch(
         handleAuth({ isLoggedIn: true, uname: cookie.uname, token: getToken })

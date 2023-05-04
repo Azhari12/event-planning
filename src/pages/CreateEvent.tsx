@@ -11,6 +11,7 @@ import { format } from "date-fns";
 
 import axios from "axios";
 import Swal from "@/utils/Swal";
+import { useNavigate } from "react-router-dom";
 interface ticketCategoriesType {
   ticket_category: string;
   ticket_price: number;
@@ -34,6 +35,7 @@ interface EventsType {
   }[];
 }
 const CreateEvent: FC = () => {
+  const navigate = useNavigate();
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
   const getToken = cookie.token;
   const MySwal = withReactContent(Swal);
@@ -67,21 +69,15 @@ const CreateEvent: FC = () => {
     },
   ]);
 
-  useEffect(() => {
-    // console.log(ticketCategories);
-    console.log(objSubmit);
-    console.log(startDate);
-  }, [ticketCategories, objSubmit, startDate]);
+  useEffect(() => {}, [ticketCategories, objSubmit, startDate]);
 
   function addTicketCategoris() {
-    // console.log(ticketCategories);
     const temp = [...objSubmit.tickets];
     temp.push({
       ticket_category: "",
       ticket_price: 0,
       ticket_quantity: 0,
     });
-    console.log(temp);
     setObjSubmit({ ...objSubmit, tickets: temp });
   }
 
@@ -93,7 +89,6 @@ const CreateEvent: FC = () => {
   }
 
   function handleSubmit() {
-    console.log(getToken);
     // axios
     //   .post("events", objSubmit, {
     //     headers: {
@@ -114,8 +109,11 @@ const CreateEvent: FC = () => {
           title: "Success",
           text: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/");
+          }
         });
-        console.log("sucess", { data });
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -136,9 +134,7 @@ const CreateEvent: FC = () => {
       })
       .replace(/(\d+)\/(\d+)\/(\d+)/, "$1-$2-$3");
     setStartDate(date);
-    console.log(tes);
     setObjSubmit({ ...objSubmit, date: tes });
-    // setObjSubmit({ ...objSubmit, time: timeConv });
   }
 
   function handleTime(date: Date | null) {
@@ -146,14 +142,6 @@ const CreateEvent: FC = () => {
     const timeConv = date?.toLocaleTimeString("en-US", { hour12: false });
     setObjSubmit({ ...objSubmit, time: timeConv });
   }
-  // function handleChange(
-  //   value: (string & number) | undefined,
-  //   key: keyof typeof objSubmit
-  // ) {
-  //   let temp = { ...objSubmit };
-  //   temp[key] = value;
-  //   setObjSubmit(temp);
-  // }
 
   return (
     <Layout>
@@ -208,8 +196,6 @@ const CreateEvent: FC = () => {
                 locale={id}
                 dateFormat="p"
                 timeFormat="p"
-                // minDate={new Date()}
-                // maxDate={moment().tz("Asia/Jakarta").endOf("day").toDate()}
               />
             </div>
             <div className="form-control w-full">
@@ -222,7 +208,6 @@ const CreateEvent: FC = () => {
                   onChange={(e) => {
                     setObjSubmit({ ...objSubmit, status: e.target.value });
                   }}
-                  // value={tikectselect}
                 >
                   <option selected>Status</option>
                   <option value="close">Close</option>
