@@ -12,10 +12,10 @@ const Footer: FC = () => {
           </a>
         </div>
         <div className="grid grid-flow-col gap-4">
-          <a className="link link-hover">Home</a>
-          <a className="link link-hover">My Book</a>
-          <a className="link link-hover">My Rent Book</a>
-          <a className="link link-hover">Profile</a>
+          <a className="link link-hover">About Us</a>
+          <a className="link link-hover">Contact</a>
+          <a className="link link-hover">Jobs</a>
+          <a className="link link-hover">Press Kit</a>
         </div>
         <div>
           <div className="grid grid-flow-col gap-4">
@@ -56,7 +56,7 @@ const Footer: FC = () => {
         </div>
       </div>
       <div>
-        <p>Copyright © 2023 - All right reserved by Group Project One</p>
+        <p>Copyright © 2023 - All right reserved by Group Project Three</p>
       </div>
     </footer>
   );

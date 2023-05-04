@@ -17,27 +17,27 @@ interface buyingTikcetType {
 }
 
 interface detailType {
-  event_id: number;
-  title: string;
-  description: string;
-  hosted_by: string;
-  date: string;
-  time: string;
-  status: string;
-  category: string;
-  location: string;
-  event_picture: string;
-  attendances: [
+  event_id?: number;
+  title?: string;
+  description?: string;
+  hosted_by?: string;
+  date?: string;
+  time?: string;
+  status?: string;
+  category?: string;
+  location?: string;
+  event_picture?: string;
+  attendances?: [
     {
-      username: string;
-      user_picture: string;
+      username?: string;
+      user_picture?: string;
     }
   ];
-  reviews: [
+  reviews?: [
     {
-      username: string;
-      user_picture: string;
-      review: string;
+      username?: string;
+      user_picture?: string;
+      review?: string;
     }
   ];
 }
@@ -112,11 +112,7 @@ const DetailEvent: FC = () => {
   const username = "peterzalai";
 
   useEffect(() => {
-    console.log(tikectselect);
-    console.log(tiecketArray);
-    console.log(qtyAllticket);
     fetchData();
-    // addTicket(tikectselect);
   }, []);
 
   function fetchData() {
@@ -137,10 +133,8 @@ const DetailEvent: FC = () => {
     })
       .then((res) => {
         const { data, message } = res.data;
-        console.log(data);
         setData(data);
         array = data.attendances;
-        console.log(array);
         let isAttending = array.some((item) => item.username === cookie.uname);
         setAttending(isAttending);
         if (isAttending) {
@@ -182,7 +176,6 @@ const DetailEvent: FC = () => {
       .then((res) => {
         const { data, message } = res.data;
         setTicketDatas(data);
-        console.log(ticketDatas);
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -201,7 +194,6 @@ const DetailEvent: FC = () => {
   }
 
   function addTicket(categories: string) {
-    console.log(categories);
     setJoin(true);
     const tempTikcet = [...tiecketArray];
     let dataTicket = {
@@ -251,7 +243,6 @@ const DetailEvent: FC = () => {
     qty: number,
     default_price: number
   ) {
-    console.log(tiecketArray);
     qty++;
     const ticketData = {
       subtotal: default_price * qty,
@@ -317,7 +308,6 @@ const DetailEvent: FC = () => {
                 navigate("/");
               }
             });
-            console.log("success Delete Event");
           })
           .catch((error) => {
             const { message } = error.response.data;
@@ -332,7 +322,6 @@ const DetailEvent: FC = () => {
   }
 
   function handleComment() {
-    console.log(review);
     // axios
     //   .post(`reviews/${id}`, review, {
     //     headers: {
@@ -354,7 +343,6 @@ const DetailEvent: FC = () => {
           text: message,
           showCancelButton: false,
         });
-        console.log("sucess");
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -386,7 +374,7 @@ const DetailEvent: FC = () => {
         <div className="hero-content flex-col lg:flex-row">
           <img
             src={data?.event_picture}
-            className=" w-full h-full max-w-md max-h-[28rem] rounded-lg shadow-2xl object-cover"
+            className=" w-full h-full max-w-[35rem]  max-h-[28rem] rounded-lg shadow-2xl object-cover"
           />
           <div className=" lg:pl-14">
             <h1 className="text-5xl font-bold capitalize">{data?.title}</h1>
@@ -435,14 +423,31 @@ const DetailEvent: FC = () => {
                     Hosted by {data?.hosted_by}
                   </p>
                 </div>
-                <div className="flex flex-col justify-center items-center">
-                  <p className=" text-lg font-bold text-red-800">
-                    {data?.status}
-                  </p>
-                  <button className="btn ml-2 bg-button mt-10 text rounded-lg">
-                    Open
-                  </button>
-                </div>
+                {data?.status == "close" ? (
+                  <div className="flex flex-col justify-center items-center">
+                    <p className=" text-lg font-bold text-red-800 uppercase">
+                      {data?.status}
+                    </p>
+                    <button
+                      className="btn ml-2 bg-button mt-10 text rounded-lg"
+                      onClick={(e) => setData({ ...data, status: "open" })}
+                    >
+                      Open
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col justify-center items-center">
+                    <p className=" text-lg font-bold text-green-600 uppercase">
+                      {data?.status}
+                    </p>
+                    <button
+                      className="btn ml-2 bg-red-700 mt-10 text rounded-lg border-red-700"
+                      onClick={(e) => setData({ ...data, status: "close" })}
+                    >
+                      Close
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className=" flex border-2 rounded-lg p-5 mt-5 justify-around">
@@ -681,8 +686,9 @@ const DetailEvent: FC = () => {
             <div className="m-4">
               <p className=" text-lg font-bold ">Attendees</p>
               <div className=" grid lg:grid-cols-5 md:grid-cols-4 sm:grid-cols-3 min-[400px]:grid-cols-2 text-lg font-semibold">
-                {data?.attendances !== undefined
-                  ? data?.attendances.map((data) => {
+                {data?.attendances !== undefined ? (
+                  data.attendances.length > 0 ? (
+                    data?.attendances.map((data) => {
                       return (
                         <div className=" flex flex-col justify-center items-center p-10">
                           <img
@@ -693,7 +699,14 @@ const DetailEvent: FC = () => {
                         </div>
                       );
                     })
-                  : "No Data"}
+                  ) : (
+                    <div className=" font-normal text-base w-full">
+                      <p>No User Joining this event yet</p>
+                    </div>
+                  )
+                ) : (
+                  "No Data"
+                )}
               </div>
             </div>
             <div className="m-4">
@@ -726,8 +739,9 @@ const DetailEvent: FC = () => {
                 ) : (
                   ""
                 )}
-                {data?.reviews
-                  ? data?.reviews.map((data) => {
+                {data?.reviews ? (
+                  data.reviews.length > 0 ? (
+                    data?.reviews.map((data) => {
                       return (
                         <div className="flex items-center">
                           <div className=" flex-initial w-[5rem] h-20">
@@ -745,7 +759,14 @@ const DetailEvent: FC = () => {
                         </div>
                       );
                     })
-                  : "No Data"}
+                  ) : (
+                    <div className=" font-normal text-base w-full">
+                      <p>No Comment on This Event</p>
+                    </div>
+                  )
+                ) : (
+                  "No Data"
+                )}
               </div>
             </div>
           </div>

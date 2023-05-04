@@ -219,7 +219,7 @@ const UpdateEvent: FC = () => {
         month: "2-digit",
         day: "2-digit",
       })
-      .replace(/(\d+)\/(\d+)\/(\d+)/, "$1-$2-$3");
+      .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$2-$1");
     setStartDate(date);
     console.log(tes);
     setObjSubmit({ ...objSubmit, date: tes });
@@ -336,7 +336,7 @@ const UpdateEvent: FC = () => {
               label="Location"
               defaultValue={objSubmit.location}
             />
-            <div className="form-control">
+            {/* <div className="form-control">
               <label className="label flex-row justify-start">
                 <span className="label-text font-bold">Ticket Categories</span>
                 <button
@@ -395,7 +395,7 @@ const UpdateEvent: FC = () => {
                   </div>
                 );
               })}
-            </div>
+            </div> */}
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Upload Profile Image</span>

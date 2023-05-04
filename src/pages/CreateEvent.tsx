@@ -195,7 +195,7 @@ const CreateEvent: FC = () => {
             </div>
             <div className=" lg:mx-5">
               <label className="label">
-                <span className="label-text">Date</span>
+                <span className="label-text">Time</span>
               </label>
               <DatePicker
                 className="input input-bordered w-full rounded-xl"

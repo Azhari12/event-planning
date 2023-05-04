@@ -91,7 +91,13 @@ const Payment: FC = () => {
             </figure>
             <div className="card-body">
               <h2 className="card-title">{localData?.title_event}</h2>
-              <p>{localData?.items_description?.length} Tickets</p>
+              <p>
+                {localData?.items_description.reduce(
+                  (totals, tickets) => totals + tickets.ticket_quantity,
+                  0
+                )}{" "}
+                Tickets
+              </p>
               <div className="mt-5">
                 <p className=" text-lg">Total</p>
                 <p className=" text-xl font-semibold">
