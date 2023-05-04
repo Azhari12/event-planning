@@ -138,16 +138,7 @@ const DetailEvent: FC = () => {
         let isAttending = array.some((item) => item.username === cookie.uname);
         setAttending(isAttending);
         if (isAttending) {
-          axios
-            .get(`transactions/${id}`, {
-              headers: {
-                Authorization: `Bearer ${getToken}`,
-              },
-            })
-            .then((res) => {
-              const { data } = res.data;
-              setTrasactionData(data);
-            });
+          fetchTransaction();
         }
       })
       .catch((error) => {
@@ -181,6 +172,53 @@ const DetailEvent: FC = () => {
       .catch((error) => {
         const { message } = error.response.data;
       });
+  }
+
+  function fetchTransaction() {
+    interface transType {
+      id: string;
+      event_id: number | undefined;
+      username: string;
+    }
+    const data: string | null = localStorage.getItem("newTrans");
+    let dataTransactionLocal: transType[] = [];
+    if (data !== null) {
+      dataTransactionLocal = JSON.parse(data);
+    }
+    console.log(dataTransactionLocal);
+    if (id) {
+      console.log(
+        dataTransactionLocal.find(
+          (item: transType) =>
+            item.username === cookie.uname && item.event_id === parseInt(id)
+        )
+      );
+    }
+    let trans: any;
+    if (id) {
+      trans = dataTransactionLocal.find(
+        (item: transType) =>
+          item.username === cookie.uname && item.event_id === parseInt(id)
+      );
+    }
+
+    console.log(trans?.id);
+    // axios
+    //   .get(`transactions/${trans?.id}`, {
+    //     headers: {
+    //       Authorization: `Bearer ${getToken}`,
+    //     },
+    //   })
+    axios({
+      method: "get",
+      url: `https://peterzalai.biz.id/transactions/${trans?.id}`,
+      headers: {
+        Authorization: `Bearer ${getToken}`,
+      },
+    }).then((res) => {
+      const { data } = res.data;
+      setTrasactionData(data);
+    });
   }
 
   function addTicket(categories: string) {
@@ -379,13 +417,13 @@ const DetailEvent: FC = () => {
   return (
     <Layout>
       <div className=" min-h-screen place-items-start lg:p-10">
-        <div className="hero-content flex-col lg:flex-row">
+        <div className="hero-content flex-col lg:flex-row items-start">
           <img
             src={data?.event_picture}
-            className=" w-full h-full max-w-[35rem]  max-h-[28rem] rounded-lg shadow-2xl object-cover"
+            className="w-[35rem]  h-[28rem] rounded-lg shadow-2xl object-cover"
           />
           <div className=" lg:pl-14">
-            <h1 className="text-5xl font-bold capitalize">{data?.title}</h1>
+            <h1 className="text-3xl font-bold capitalize">{data?.title}</h1>
             <p className="py-6 text-[#4B5262]">{data?.description}</p>
             <div className=" flex justify-around text-lg font-bold">
               {data?.attendances !== undefined ? (
@@ -407,19 +445,23 @@ const DetailEvent: FC = () => {
 
               <div>
                 <p>
-                  {ticketDatas.reduce(
-                    (totals, tickets) => totals + tickets.ticket_quantity,
-                    0
-                  )}{" "}
+                  {ticketDatas !== undefined
+                    ? ticketDatas.reduce(
+                        (totals, tickets) => totals + tickets.ticket_quantity,
+                        0
+                      )
+                    : 0}{" "}
                   Ticket Alvailable
                 </p>
                 <p className="text-[#4B5262] text-sm font-normal">
-                  {ticketDatas.reduce(
-                    (totals, tickets) => totals + tickets.ticket_quantity,
-                    0
-                  ) !== 0
-                    ? "Don't let you run out of tickets"
-                    : "Sorry you ran out of tickets, and Can not join this event"}
+                  {ticketDatas !== undefined
+                    ? ticketDatas.reduce(
+                        (totals, tickets) => totals + tickets.ticket_quantity,
+                        0
+                      ) !== 0
+                      ? "Don't let you run out of tickets"
+                      : "Sorry you ran out of tickets, and Can not join this event"
+                    : "no tickets"}
                 </p>
               </div>
             </div>
@@ -806,9 +848,9 @@ const DetailEvent: FC = () => {
               <div className=" flex-col">
                 <p>TO:</p>
                 <p className=" text-base text-button font-semibold">
-                  {trasactionData?.seller}
+                  {data?.hosted_by}
                 </p>
-                <p>{trasactionData?.seller_email}</p>
+                <p> </p>
               </div>
               <div className=" flex-col">
                 <p>FROM:</p>

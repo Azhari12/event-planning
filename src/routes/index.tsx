@@ -69,10 +69,6 @@ const Router: FC = () => {
   ]);
 
   useEffect(() => {
-    // removeCookie("tkn");
-    // removeCookie("uname");
-    // console.log(getToken);
-    // console.log(cookie);
     if (getToken) {
       dispatch(
         handleAuth({ isLoggedIn: true, uname: cookie.uname, token: getToken })

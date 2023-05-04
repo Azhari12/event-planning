@@ -60,11 +60,7 @@ const MyEvents: FC = () => {
       })
       .catch((er) => {
         const { message } = er.response.data;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
+        setDatas([]);
       });
   }
 
@@ -168,25 +164,27 @@ const MyEvents: FC = () => {
             )}
           </div>
         </div>
-        <div className=" flex-1">
+        <div className=" flex-1 transition-all">
           <div className=" flex flex-col transition-all">
-            {datas.map((data) => {
-              return (
-                <Link to={`/detail-event/${data.event_id}`}>
-                  <Card
-                    id={data.event_id}
-                    name={data.title}
-                    hosted_by={data.hosted_by}
-                    date={data.date}
-                    time={data.time}
-                    status={data.status}
-                    location={data.location}
-                    details={data.description}
-                    event_picture={data.event_picture}
-                  />
-                </Link>
-              );
-            })}
+            {datas.length !== 0
+              ? datas.map((data) => {
+                  return (
+                    <Link to={`/detail-event/${data.event_id}`}>
+                      <Card
+                        id={data.event_id}
+                        name={data.title}
+                        hosted_by={data.hosted_by}
+                        date={data.date}
+                        time={data.time}
+                        status={data.status}
+                        location={data.location}
+                        details={data.description}
+                        event_picture={data.event_picture}
+                      />
+                    </Link>
+                  );
+                })
+              : "NO DATA"}
           </div>
         </div>
       </div>
