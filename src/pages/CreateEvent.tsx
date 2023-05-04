@@ -232,7 +232,7 @@ const CreateEvent: FC = () => {
                   <option value={"music"}>Music</option>
                   <option value={"art"}>Art</option>
                   <option value={"games"}>Game</option>
-                  <option value={"sports"}>IT</option>
+                  <option value={"sports"}>Sports</option>
                 </select>
               </div>
             </div>
