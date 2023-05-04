@@ -1,7 +1,7 @@
 import withReactContent from "sweetalert2-react-content";
 import Layout from "@/components/Layout";
 import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import Swal from "@/utils/Swal";
@@ -22,6 +22,7 @@ interface localType {
 }
 
 const Payment: FC = () => {
+  const navigate = useNavigate();
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
   const getToken = cookie.token;
   const MySwal = withReactContent(Swal);
@@ -65,6 +66,10 @@ const Payment: FC = () => {
           title: "Success",
           text: message,
           showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`detail-event/${localData?.event_id}`);
+          }
         });
         localStorage.removeItem("ticket_data");
       })
@@ -85,7 +90,11 @@ const Payment: FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 mt-10">
           <div className="card card-side bg-[#F7F8F9] px-5 rounded-xl">
             <figure className=" w-2/4">
-              <img src="/noah.jpg" alt="Movie" className=" rounded-lg" />
+              <img
+                src={localData?.title_image}
+                alt="Movie"
+                className=" rounded-lg"
+              />
             </figure>
             <div className="card-body">
               <h2 className="card-title">{localData?.title_event}</h2>

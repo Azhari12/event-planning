@@ -209,7 +209,9 @@ const CreateEvent: FC = () => {
                     setObjSubmit({ ...objSubmit, status: e.target.value });
                   }}
                 >
-                  <option selected>Status</option>
+                  <option selected disabled>
+                    Status
+                  </option>
                   <option value="close">Close</option>
                   <option value="open">Open</option>
                 </select>
