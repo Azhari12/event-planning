@@ -175,19 +175,11 @@ const DetailEvent: FC = () => {
     })
       .then((res) => {
         const { data, message } = res.data;
-        // const ticket = data.reduce(
-        //   (totals, tickets) => totals + tickets.ticket_quantity,
-        //   0
-        // )
+
         setTicketDatas(data);
       })
       .catch((error) => {
         const { message } = error.response.data;
-        MySwal.fire({
-          title: "Failed",
-          text: message,
-          showCancelButton: false,
-        });
       });
   }
 
@@ -226,6 +218,7 @@ const DetailEvent: FC = () => {
     qty: number,
     default_price: number
   ) {
+    console.log(qtyAllticket);
     qty++;
     const ticketData = {
       subtotal: default_price * qty,
@@ -389,7 +382,12 @@ const DetailEvent: FC = () => {
                   Ticket Alvailable
                 </p>
                 <p className="text-[#4B5262] text-sm font-normal">
-                  Don't let you run out of tickets
+                  {ticketDatas.reduce(
+                    (totals, tickets) => totals + tickets.ticket_quantity,
+                    0
+                  ) !== 0
+                    ? "Don't let you run out of tickets"
+                    : "Sorry you ran out of tickets, and Can not join this event"}
                 </p>
               </div>
             </div>
@@ -641,7 +639,12 @@ const DetailEvent: FC = () => {
               <p>Total</p>
               <p className="mt-3 text-xl">Rp. {total}</p>
               <div>
-                {join && data?.status !== "close" ? (
+                {join &&
+                data?.status !== "close" &&
+                ticketDatas.reduce(
+                  (totals, tickets) => totals + tickets.ticket_quantity,
+                  0
+                ) !== 0 ? (
                   <button
                     className="btn ml-2 bg-button mt-10 text-lg rounded-lg"
                     onClick={(e) => handleJoin()}
