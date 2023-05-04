@@ -343,6 +343,39 @@ const DetailEvent: FC = () => {
     navigate(`/payment/${id}`);
   }
 
+  function handleStatus(statusChange: string) {
+    const dataStatus = { ...data, status: statusChange };
+    axios({
+      method: "put",
+      url: `https://peterzalai.biz.id/events/${id}`,
+      data: dataStatus,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${getToken}`,
+      },
+    })
+      .then((res) => {
+        const { message } = res.data;
+        MySwal.fire({
+          title: "Success",
+          text: `Status Changed to ${statusChange}`,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate(`/detail-event/${id}`);
+          }
+        });
+      })
+      .catch((error) => {
+        const { message } = error.response.data;
+        MySwal.fire({
+          title: "Failed",
+          text: "message",
+          showCancelButton: false,
+        });
+      })
+      .finally(() => fetchData());
+  }
   return (
     <Layout>
       <div className=" min-h-screen place-items-start lg:p-10">
@@ -410,7 +443,7 @@ const DetailEvent: FC = () => {
                     </p>
                     <button
                       className="btn ml-2 bg-button mt-10 text rounded-lg"
-                      onClick={(e) => setData({ ...data, status: "open" })}
+                      onClick={(e) => handleStatus("open")}
                     >
                       Open
                     </button>
@@ -422,7 +455,7 @@ const DetailEvent: FC = () => {
                     </p>
                     <button
                       className="btn ml-2 bg-red-700 mt-10 text rounded-lg border-red-700"
-                      onClick={(e) => setData({ ...data, status: "close" })}
+                      onClick={(e) => handleStatus("close")}
                     >
                       Close
                     </button>
@@ -677,8 +710,8 @@ const DetailEvent: FC = () => {
                       return (
                         <div className=" flex flex-col justify-center items-center p-10">
                           <img
-                            src="/kirito.jpg"
-                            className=" w-full h-full max-w-md max-h-[28rem] mask mask-circle shadow-2xl object-fill"
+                            src={data.user_picture}
+                            className=" w-full h-full max-w-[5rem] max-h-[5rem] mask mask-circle shadow-2xl object-fill"
                           />
                           <p>{data.username}</p>
                         </div>

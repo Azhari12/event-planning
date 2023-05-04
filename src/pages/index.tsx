@@ -159,23 +159,27 @@ const Home: FC = () => {
               );
             })}
           </div>
-          <div className="btn-group w-full justify-center items-center p-10 ">
-            <button
-              className="btn bg-white text-button border-none hover:bg-gradient-to-r"
-              onClick={(e) => handlePage(-1)}
-            >
-              «
-            </button>
-            <button className="btn bg-white text-button border-none hover:bg-gradient-to-r">
-              Page {numberPage}
-            </button>
-            <button
-              className="btn bg-white text-button border-none hover:bg-gradient-to-r"
-              onClick={(e) => handlePage(1)}
-            >
-              »
-            </button>
-          </div>
+          {totalPage > 1 ? (
+            <div className="btn-group w-full justify-center items-center p-10">
+              <button
+                className="btn bg-white text-button border-none hover:bg-gradient-to-r"
+                onClick={(e) => handlePage(-1)}
+              >
+                «
+              </button>
+              <button className="btn bg-white text-button border-none hover:bg-gradient-to-r">
+                Page {numberPage}
+              </button>
+              <button
+                className="btn bg-white text-button border-none hover:bg-gradient-to-r"
+                onClick={(e) => handlePage(1)}
+              >
+                »
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </Layout>

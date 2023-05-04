@@ -56,7 +56,6 @@ const MyEvents: FC = () => {
     })
       .then((response) => {
         const { data, message } = response.data;
-        console.log(data);
         setDatas(data);
       })
       .catch((er) => {

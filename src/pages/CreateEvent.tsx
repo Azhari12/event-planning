@@ -209,7 +209,9 @@ const CreateEvent: FC = () => {
                     setObjSubmit({ ...objSubmit, status: e.target.value });
                   }}
                 >
-                  <option selected>Status</option>
+                  <option selected disabled>
+                    Status
+                  </option>
                   <option value="close">Close</option>
                   <option value="open">Open</option>
                 </select>
@@ -232,7 +234,7 @@ const CreateEvent: FC = () => {
                   <option value={"music"}>Music</option>
                   <option value={"art"}>Art</option>
                   <option value={"games"}>Game</option>
-                  <option value={"sports"}>IT</option>
+                  <option value={"sports"}>Sports</option>
                 </select>
               </div>
             </div>

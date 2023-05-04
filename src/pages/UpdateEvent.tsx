@@ -283,13 +283,16 @@ const UpdateEvent: FC = () => {
                 <div className="input-group w-full rounded-xl">
                   <select
                     className="select select-bordered w-full"
+                    onChange={(e) => {
+                      setObjSubmit({ ...objSubmit, status: e.target.value });
+                    }}
                     value={objSubmit.status}
                   >
                     <option selected disabled>
                       Select Status
                     </option>
-                    <option>close</option>
-                    <option>open</option>
+                    <option value="close">Close</option>
+                    <option value="open">Open</option>
                   </select>
                 </div>
               </div>
