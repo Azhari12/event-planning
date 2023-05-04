@@ -33,7 +33,6 @@ const UpdateEvent: FC = () => {
   const [ticketCategories, setTicketCategories] = useState<
     ticketCategoriesType[]
   >([]);
-  // const [data, setData] = useState<detailType>();
   const { id } = useParams();
   const [cookie, , removeCookie] = useCookies(["token", "uname"]);
   const getToken = cookie.token;
@@ -45,15 +44,11 @@ const UpdateEvent: FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   useEffect(() => {
-    console.log(fetch);
-    console.log(ticketCategories);
-    console.log(objSubmit);
     fetchData();
   }, [objSubmit]);
 
   function fetchData() {
     if (!fetch) {
-      console.log("2fetch");
       // axios
       //   .get(`events/${id}`, {
       //     headers: {
@@ -106,7 +101,6 @@ const UpdateEvent: FC = () => {
       })
         .then((res) => {
           const { data, message } = res.data;
-          console.log(data);
           setTicketCategories(data);
         })
         .catch((error) => {
@@ -123,13 +117,10 @@ const UpdateEvent: FC = () => {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log(objSubmit);
     const formData = new FormData();
     let key: keyof typeof objSubmit;
-    // console.log(objSubmit);
     for (key in objSubmit) {
       formData.append(key, objSubmit[key]);
-      console.log(key, objSubmit[key]);
     }
     axios({
       method: "put",
@@ -151,7 +142,6 @@ const UpdateEvent: FC = () => {
             navigate(`/detail-event/${id}`);
           }
         });
-        console.log("event Succes Update");
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -181,7 +171,6 @@ const UpdateEvent: FC = () => {
             navigate(`/detail-event/${id}`);
           }
         });
-        console.log("Tickets Succes Update");
       })
       .catch((error) => {
         const { message } = error.response.data;
@@ -194,14 +183,12 @@ const UpdateEvent: FC = () => {
   }
 
   function addTicketCategoris() {
-    console.log(ticketCategories);
     const temp = [...ticketCategories];
     temp.push({
       ticket_category: "",
       ticket_price: 0,
       ticket_quantity: 0,
     });
-    console.log(temp);
     setTicketCategories(temp);
   }
 
@@ -221,9 +208,7 @@ const UpdateEvent: FC = () => {
       })
       .replace(/(\d+)\/(\d+)\/(\d+)/, "$3-$2-$1");
     setStartDate(date);
-    console.log(tes);
     setObjSubmit({ ...objSubmit, date: tes });
-    // setObjSubmit({ ...objSubmit, time: timeConv });
   }
 
   function handleTime(date: Date | null) {
@@ -289,8 +274,6 @@ const UpdateEvent: FC = () => {
                   timeCaption="Time"
                   dateFormat="p"
                   timeFormat="p"
-                  // minDate={new Date()}
-                  // maxDate={moment().tz("Asia/Jakarta").endOf("day").toDate()}
                 />
               </div>
               <div className="form-control w-full">
@@ -336,66 +319,6 @@ const UpdateEvent: FC = () => {
               label="Location"
               defaultValue={objSubmit.location}
             />
-            {/* <div className="form-control">
-              <label className="label flex-row justify-start">
-                <span className="label-text font-bold">Ticket Categories</span>
-                <button
-                  onClick={(event) => {
-                    addTicketCategoris();
-                  }}
-                >
-                  <span className="label-text font-bold text-button  ml-5">
-                    + Add Category
-                  </span>
-                </button>
-              </label>
-              {ticketCategories.map((data) => {
-                return (
-                  <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 min-[400px]:grid-cols-1 pb-3 border-b-2">
-                    <div className=" lg:pr-3">
-                      <InputForm
-                        defaultValue={data.ticket_category}
-                        type="text"
-                        placeholder="Ticket Name"
-                        label="Ticket Name"
-                      />
-                    </div>
-                    <div className=" lg:px-3">
-                      <InputForm
-                        defaultValue={data.ticket_price}
-                        type="text"
-                        placeholder="Ticket Price"
-                        label="Price"
-                      />
-                    </div>
-                    <div className=" lg:pl-3 flex justify-center items-center ">
-                      <InputForm
-                        type="text"
-                        placeholder="Quantity"
-                        label="Qty"
-                        defaultValue={data.ticket_quantity}
-                      />
-                      <button onClick={deleteTicket}>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={1.5}
-                          stroke="currentColor"
-                          className="w-6 h-6 mt-8 ml-3"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div> */}
             <div className="form-control w-full max-w-xs">
               <label className="label">
                 <span className="label-text">Upload Profile Image</span>

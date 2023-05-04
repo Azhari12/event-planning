@@ -44,7 +44,6 @@ const Payment: FC = () => {
       grandtotal: localData?.grandtotal,
       payment_method: "Virtual Account BNI",
     };
-    console.log(data);
 
     // axios
     //   .post("transactions", data, {
@@ -68,7 +67,6 @@ const Payment: FC = () => {
           showCancelButton: false,
         });
         localStorage.removeItem("ticket_data");
-        console.log("sucess", { data });
       })
       .catch((error) => {
         const { message } = error.response.data;
