@@ -68,14 +68,16 @@ const Payment: FC = () => {
         interface type {
           id?: number;
           event_id?: number;
+          username: string;
         }
-        const trans: string | null = localStorage.getItem("trans");
+        const trans: string | null = localStorage.getItem("newTrans");
         if (trans !== null) {
           array = JSON.parse(trans);
         }
         const transactionLocal = {
           id: data.invoice,
           event_id: localData?.event_id,
+          username: cookie.uname,
         };
         array.push(transactionLocal);
 
@@ -84,7 +86,7 @@ const Payment: FC = () => {
           gross_amount: localData?.grandtotal,
         };
 
-        localStorage.setItem("trans", JSON.stringify(array));
+        localStorage.setItem("newTrans", JSON.stringify(array));
         console.log(transactionLocal);
         axios({
           method: "post",
@@ -163,9 +165,13 @@ const Payment: FC = () => {
             <p className=" text-lg font-medium">Choose Payment Method</p>
             <div className="bg-[#D6BBFB] w-full flex p-5 justify-start items-start rounded-lg">
               <figure className=" w-[15%]">
-                <img src="/Logo-BNI.jpg" alt="Movie" className=" rounded-lg" />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png"
+                  alt="Movie"
+                  className=" rounded-lg"
+                />
               </figure>
-              <p className="ml-10 font-medium">BNI Virtual Account</p>
+              <p className="ml-10 font-medium">BCA Virtual Account</p>
             </div>
             <select className=" border-2 rounded-lg p-2 mt-5 w-full">
               <option selected>BNI Virtual Account</option>

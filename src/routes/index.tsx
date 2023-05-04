@@ -69,8 +69,6 @@ const Router: FC = () => {
   ]);
 
   useEffect(() => {
-    console.log(getToken);
-    console.log(cookie);
     if (getToken) {
       dispatch(
         handleAuth({ isLoggedIn: true, uname: cookie.uname, token: getToken })

@@ -56,7 +56,7 @@ const PDFDocument: FC<Props> = (props) => {
               marginBottom: "5mm",
             }}
           >
-            {title}
+            {title}'s Ticket
           </Text>
           <Text style={{ fontFamily: "Oswald", fontSize: "16pt" }}>
             {`Invoice: ${invoice}`}

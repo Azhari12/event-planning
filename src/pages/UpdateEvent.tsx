@@ -303,15 +303,18 @@ const UpdateEvent: FC = () => {
                 <div className="input-group w-full ">
                   <select
                     className="select select-bordered w-full"
+                    onChange={(e) => {
+                      setObjSubmit({ ...objSubmit, category: e.target.value });
+                    }}
                     value={objSubmit.category}
                   >
                     <option selected disabled>
                       Select Categories
                     </option>
-                    <option>Music</option>
-                    <option>Art</option>
-                    <option>Game</option>
-                    <option>IT</option>
+                    <option value={"music"}>Music</option>
+                    <option value={"art"}>Art</option>
+                    <option value={"games"}>Game</option>
+                    <option value={"sports"}>Sports</option>
                   </select>
                 </div>
               </div>
