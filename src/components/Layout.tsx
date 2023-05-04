@@ -27,7 +27,6 @@ const Layout: FC<Props> = (props) => {
       if (result.isConfirmed) {
         removeCookie("token");
         removeCookie("uname");
-        console.log(cookie);
         dispatch(handleAuth(false));
         navigate("/");
       }

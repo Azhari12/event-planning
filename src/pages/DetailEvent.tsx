@@ -218,7 +218,6 @@ const DetailEvent: FC = () => {
     qty: number,
     default_price: number
   ) {
-    console.log(qtyAllticket);
     qty++;
     const ticketData = {
       subtotal: default_price * qty,

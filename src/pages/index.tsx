@@ -48,7 +48,6 @@ const Home: FC = () => {
     })
       .then((response) => {
         const { data, message, pagination } = response.data;
-        console.log(data);
         setDatas(data);
         setTotalPage(pagination.total_pages);
       })

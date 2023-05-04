@@ -57,23 +57,16 @@ const MyProfile: FC = () => {
   function handleChange(value: string | File, key: keyof typeof objSubmit) {
     let temp = { ...data }; // duplikat state objSubmit yang nantinya akan dimutasi nilainya
     temp[key] = value;
-    // temp["username"] = data.username;
     setObjSubmit(temp);
-    console.log("temp", temp);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData();
     let key: keyof typeof objSubmit;
-    // console.log(objSubmit);
     for (key in objSubmit) {
       formData.append(key, objSubmit[key]);
-      console.log(key, objSubmit[key]);
     }
-    console.log(formData);
-
-    console.log(objSubmit);
 
     // axios
     //   .put("users", formData, {
