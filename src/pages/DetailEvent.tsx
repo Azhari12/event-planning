@@ -185,12 +185,6 @@ const DetailEvent: FC = () => {
           showCancelButton: false,
         });
       });
-
-    // if (ticketDatas) {
-    //   ticketDatas.map((data) => {
-    //     return setQtyAllTicket(data.ticket_quantity + qtyAllticket);
-    //   });
-    // }
   }
 
   function addTicket(categories: string) {
@@ -213,24 +207,9 @@ const DetailEvent: FC = () => {
       }
     });
 
-    // const reguler = {
-    //   default_price: 100000,
-    //   price: 100000,
-    //   name: "Reguler",
-    //   qty: 1,
-    // };
-
-    // if (categories == "VIP") {
-    //   tempTikcet.push(vip);
-    //   setTotal(total + vip.price);
-    // } else {
-    //   tempTikcet.push(reguler);
-    //   setTotal(total + reguler.price);
-    // }
     tempTikcet.push(dataTicket);
     setTotal(total + dataTicket.subtotal);
 
-    // const totalPrice = total;
     setTicetArray(tempTikcet);
   }
 
