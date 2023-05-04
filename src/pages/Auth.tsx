@@ -124,8 +124,8 @@ const Auth: FC = () => {
   }
 
   return (
-    <div className=" container mx-auto py-14 h-screen poppin ">
-      <div className=" grid lg:grid-cols-2 sm:grid-cols-1 h-full">
+    <div className=" container mx-auto py-14 h-screen poppin flex flex-col justify-center items-center">
+      <div className=" grid lg:grid-cols-2 sm:grid-cols-1 h-full items-center">
         <div className="flex justify-center h-full max-h-[600px] min-[400px]:hidden sm:hidden lg:block">
           <img
             src="/event.jpg"
@@ -133,7 +133,7 @@ const Auth: FC = () => {
             className=" objec-fill w-full h-[34rem] rounded-3xl"
           />
         </div>
-        <div className=" flex flex-col min-[400px]:mb-10  md:mb-0 h-full items-center md:px-20 lg:px-20 min-[400px]:px-0 ">
+        <div className=" flex flex-col min-[400px]:mb-10  md:mb-0 h-full items-center md:px-20 lg:px-20 min-[400px]:px-0 justify-center ">
           <div className=" w-full flex flex-col justify-center items-center">
             <p className=" text-4xl text-button font-bold text-right">
               Event Planning
