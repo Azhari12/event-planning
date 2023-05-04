@@ -138,16 +138,7 @@ const DetailEvent: FC = () => {
         let isAttending = array.some((item) => item.username === cookie.uname);
         setAttending(isAttending);
         if (isAttending) {
-          axios
-            .get(`transactions/${id}`, {
-              headers: {
-                Authorization: `Bearer ${getToken}`,
-              },
-            })
-            .then((res) => {
-              const { data } = res.data;
-              setTrasactionData(data);
-            });
+          fetchTransaction();
         }
       })
       .catch((error) => {
@@ -180,6 +171,25 @@ const DetailEvent: FC = () => {
       })
       .catch((error) => {
         const { message } = error.response.data;
+      });
+  }
+
+  function fetchTransaction() {
+    const data: string | null = localStorage.getItem("trasaction");
+    let dataTransactionLocal = {};
+    if (data !== null) {
+      dataTransactionLocal = JSON.parse(data);
+    }
+    console.log(dataTransactionLocal);
+    axios
+      .get(`transactions/${id}`, {
+        headers: {
+          Authorization: `Bearer ${getToken}`,
+        },
+      })
+      .then((res) => {
+        const { data } = res.data;
+        setTrasactionData(data);
       });
   }
 
@@ -407,19 +417,23 @@ const DetailEvent: FC = () => {
 
               <div>
                 <p>
-                  {ticketDatas.reduce(
-                    (totals, tickets) => totals + tickets.ticket_quantity,
-                    0
-                  )}{" "}
+                  {ticketDatas !== undefined
+                    ? ticketDatas.reduce(
+                        (totals, tickets) => totals + tickets.ticket_quantity,
+                        0
+                      )
+                    : 0}{" "}
                   Ticket Alvailable
                 </p>
                 <p className="text-[#4B5262] text-sm font-normal">
-                  {ticketDatas.reduce(
-                    (totals, tickets) => totals + tickets.ticket_quantity,
-                    0
-                  ) !== 0
-                    ? "Don't let you run out of tickets"
-                    : "Sorry you ran out of tickets, and Can not join this event"}
+                  {ticketDatas !== undefined
+                    ? ticketDatas.reduce(
+                        (totals, tickets) => totals + tickets.ticket_quantity,
+                        0
+                      ) !== 0
+                      ? "Don't let you run out of tickets"
+                      : "Sorry you ran out of tickets, and Can not join this event"
+                    : "no tickets"}
                 </p>
               </div>
             </div>
