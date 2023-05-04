@@ -175,6 +175,10 @@ const DetailEvent: FC = () => {
     })
       .then((res) => {
         const { data, message } = res.data;
+        // const ticket = data.reduce(
+        //   (totals, tickets) => totals + tickets.ticket_quantity,
+        //   0
+        // )
         setTicketDatas(data);
       })
       .catch((error) => {
