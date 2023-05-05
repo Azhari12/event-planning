@@ -24,9 +24,13 @@ const Card: FC<Props> = (props) => {
     event_picture,
   } = props;
   return (
-    <div className="card lg:card-side hover:bg-gradient-to-r from-white via-[#E5EFFF] via-50% to-white to-100% pt-10 lg:p-10 w-full transition-all">
-      <figure className=" lg:w-1/3 md:w-full sm:flex-row min-[400px]:w-full">
-        <img src={event_picture} alt="Album" className=" rounded-xl" />
+    <div className="card lg:card-side hover:bg-gradient-to-r from-white via-[#E5EFFF] via-50% to-white to-100% pt-10 lg:p-10 w-full transition-all max-h-[20rem]">
+      <figure className=" lg:w-1/3 md:w-full sm:flex-row min-[400px]:w-full  ">
+        <img
+          src={event_picture}
+          alt="Album"
+          className=" rounded-xl h-full object-cover"
+        />
       </figure>
       <div className="card-body lg:w-2/3 md:w-full min-[400px]:w-full sm:w-full justify-start p-0 lg:pl-5 min-[400px]:p-0 sm:p-0">
         <div className="flex min-[400px]:flex-col sm:flex-col lg:flex-row max-w-full relative">
@@ -48,7 +52,7 @@ const Card: FC<Props> = (props) => {
           <p className="line-clamp-5">{details}</p>
         </div>
         <div className="flex justify-start text-[#858C80] text-sm font-medium">
-          <p className=" flex-none">
+          <p className=" truncate flex-none w-[100%]">
             {" "}
             Hosted by {hosted_by} | {location}
           </p>
