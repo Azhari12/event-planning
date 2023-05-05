@@ -185,15 +185,7 @@ const DetailEvent: FC = () => {
     if (data !== null) {
       dataTransactionLocal = JSON.parse(data);
     }
-    console.log(dataTransactionLocal);
-    if (id) {
-      console.log(
-        dataTransactionLocal.find(
-          (item: transType) =>
-            item.username === cookie.uname && item.event_id === parseInt(id)
-        )
-      );
-    }
+
     let trans: any;
     if (id) {
       trans = dataTransactionLocal.find(
@@ -202,7 +194,6 @@ const DetailEvent: FC = () => {
       );
     }
 
-    console.log(trans?.id);
     // axios
     //   .get(`transactions/${trans?.id}`, {
     //     headers: {
